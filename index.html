@@ -479,14 +479,29 @@ const nowDate=()=>new Date().toISOString().split('T')[0];
 function sbadge(s){const m={Aprovada:'b-green',Aguardando:'b-yellow','Em andamento':'b-blue',Prejuízo:'b-red',Cancelada:'b-gray'};return`<span class="badge ${m[s]||'b-gray'}">${s}</span>`;}
 const mcls=m=>m>=20?'mg-green':m>=10?'mg-yellow':'mg-red';
 
+function getMonthRange(){
+  const val=document.getElementById('monthSel').value;
+  const parts=val.split('-');
+  const year=parts[0];const month=parts[1];
+  const start=year+'-'+month+'-01';
+  const lastDay=new Date(parseInt(year),parseInt(month),0).getDate();
+  const end=year+'-'+month+'-'+String(lastDay).padStart(2,'0');
+  return{start:start,end:end};
+}
+function filterByMonth(arr,field){
+  if(!field)field='dt';
+  const r=getMonthRange();
+  return arr.filter(function(x){return x[field]>=r.start&&x[field]<=r.end;});
+}
+
 // ===================== CARREGAR DADOS =====================
 async function loadAll() {
   try {
     const [dr,tk,tr,fu,dp,cfg] = await Promise.all([
       sb.from('drivers').select('*').order('nome'),
       sb.from('trucks').select('*').order('mod'),
-      sb.from('trips').select('*').order('created_at',{ascending:false}),
-      sb.from('fuels').select('*').order('created_at',{ascending:false}),
+      sb.from('trips').select('*').order('dt',{ascending:false}),
+      sb.from('fuels').select('*').order('dt',{ascending:false}),
       sb.from('despesas').select('*').order('id'),
       sb.from('config').select('*').limit(1)
     ]);
@@ -502,6 +517,7 @@ async function loadAll() {
     document.getElementById('cfg-kml').value = S.config.kml_default||3.8;
   } catch(e) { showToast('Erro ao carregar dados: '+e.message,'error'); }
   document.getElementById('loadingOverlay').style.display='none';
+  populateMonthSel();
   populateSelects();
   renderAll();
 }
@@ -617,7 +633,24 @@ function calcFuel(){
 }
 
 // ===================== SELECTS =====================
-function populateSelects(){
+function populateMonthSel() {
+  const sel = document.getElementById('monthSel');
+  const months = new Set();
+  S.trips.forEach(t => { if(t.dt) months.add(t.dt.substring(0,7)); });
+  S.fuels.forEach(f => { if(f.dt) months.add(f.dt.substring(0,7)); });
+  // garantir mês atual
+  const now = new Date();
+  months.add(`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`);
+  const sorted = [...months].sort((a,b)=>b>a?1:-1);
+  const current = sel.value;
+  const ptMonths = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  sel.innerHTML = sorted.map(m => {
+    const [y,mo] = m.split('-');
+    return `<option value="${m}">${ptMonths[parseInt(mo)]} / ${y}</option>`;
+  }).join('');
+  if(sorted.includes(current)) sel.value = current;
+  else if(sorted.length) sel.value = sorted[0];
+}
   ['t_mot','f_mot'].forEach(id=>{
     const el=document.getElementById(id);if(!el)return;const v=el.value;
     el.innerHTML='<option value="">Selecionar...</option>'+S.drivers.filter(d=>d.status==='Ativo').map(d=>`<option value="${d.id}">${d.nome}</option>`).join('');
@@ -763,7 +796,7 @@ async function approveTrip(id){
 }
 
 function renderDashTrips(){
-  const rows=S.trips.slice(0,8);
+  const rows=filterByMonth(S.trips).slice(0,8);
   document.getElementById('dashTripBody').innerHTML=rows.length?rows.map(t=>`<tr onclick="openTripDetail(${t.id})">
     <td>${sbadge(t.status)}</td><td>${t.dt||'—'}</td><td>${t.motorista_nome}</td><td>${t.ori} → ${t.dst}</td>
     <td>${fK(t.km)}</td><td>${fR(t.frete)}</td><td class="${t.luc>=0?'profit-pos':'profit-neg'}">${fR(t.luc)}</td>
@@ -773,7 +806,7 @@ function renderDashTrips(){
 
 function renderTripsPage(){
   const sf=document.getElementById('statusFilter')?.value||'';
-  const rows=S.trips.filter(t=>!sf||t.status===sf);
+  const rows=filterByMonth(S.trips).filter(t=>!sf||t.status===sf);
   document.getElementById('allTripBody').innerHTML=rows.length?rows.map(t=>`<tr onclick="openTripDetail(${t.id})">
     <td>${sbadge(t.status)}</td><td>${t.dt||'—'}</td><td>${t.motorista_nome}</td><td>${t.ori} → ${t.dst}</td>
     <td>${fK(t.km)}</td><td>${fR(t.frete)}</td><td class="${t.luc>=0?'profit-pos':'profit-neg'}">${fR(t.luc)}</td>
@@ -817,7 +850,8 @@ async function saveFuel(){
 }
 
 function renderFuels(){
-  document.getElementById('fuelBody').innerHTML=S.fuels.length?S.fuels.map(f=>`<tr>
+  const fuels=filterByMonth(S.fuels);
+  document.getElementById('fuelBody').innerHTML=fuels.length?fuels.map(f=>`<tr>
     <td>${f.dt}</td><td>${f.motorista_nome}</td><td>${f.placa}</td><td>${f.posto||'—'}</td>
     <td><strong>${fN(f.litros,1)} L</strong></td><td>${fR(f.val)}</td><td>R$ ${fN(f.preco)}</td>
     <td>${f.km?f.km.toLocaleString('pt-BR'):'—'}</td>
@@ -825,11 +859,11 @@ function renderFuels(){
     <td><button class="btn btn-outline btn-sm" onclick="openFuelModal(${f.id})"><i class="ti ti-edit"></i></button>
     <button class="btn btn-red btn-sm" style="margin-left:4px" onclick="confirmDelete('fuel',${f.id})"><i class="ti ti-trash"></i></button></td>
   </tr>`).join(''):`<tr><td colspan="10" style="text-align:center;color:var(--text2);padding:20px">Nenhum registro</td></tr>`;
-  const totL=S.fuels.reduce((a,f)=>a+f.litros,0),totV=S.fuels.reduce((a,f)=>a+f.val,0);
+  const totL=fuels.reduce((a,f)=>a+f.litros,0),totV=fuels.reduce((a,f)=>a+f.val,0);
   document.getElementById('f-lit').textContent=fN(totL,1)+' L';
   document.getElementById('f-cost').textContent=fR(totV);
   document.getElementById('f-avg').textContent=totL>0?'R$ '+fN(totV/totL)+'/L':'—';
-  document.getElementById('f-cnt').textContent=S.fuels.length;
+  document.getElementById('f-cnt').textContent=fuels.length;
   renderTankSaldo();
 }
 
@@ -959,7 +993,8 @@ function confirmDelete(type,id){
 
 // ===================== REPORTS =====================
 function openReport(type){
-  const trips=S.trips.filter(t=>t.status==='Aprovada'||t.status==='Prejuízo');
+  const trips=filterByMonth(S.trips).filter(t=>t.status==='Aprovada'||t.status==='Prejuízo');
+  const fuels=filterByMonth(S.fuels);
   let title='',html='';
   const row=(l,v,cls)=>`<div class="report-row"><span>${l}</span><span class="${cls||''}">${v}</span></div>`;
   if(type==='viagens'){
@@ -970,9 +1005,9 @@ function openReport(type){
     <div class="report-section"><h4>POR MOTORISTA</h4>${[...new Set(trips.map(t=>t.motorista_nome))].map(n=>{const tt=trips.filter(t=>t.motorista_nome===n);return row(n,`${tt.length} viagens · ${fR(tt.reduce((a,t)=>a+(t.frete||0),0))}`,tt.reduce((a,t)=>a+(t.luc||0),0)>=0?'profit-pos':'profit-neg');}).join('')}</div>`;
   } else if(type==='diesel'){
     title='Relatório de Diesel';
-    const totL=S.fuels.reduce((a,f)=>a+f.litros,0),totV=S.fuels.reduce((a,f)=>a+f.val,0),totC=trips.reduce((a,t)=>a+(t.consumido_real||0),0);
+    const totL=fuels.reduce((a,f)=>a+f.litros,0),totV=fuels.reduce((a,f)=>a+f.val,0),totC=trips.reduce((a,t)=>a+(t.consumido_real||0),0);
     html=`<div class="report-section"><h4>RESUMO</h4>${row('Litros abastecidos',fN(totL,1)+' L')}${row('Custo abastecimento',fR(totV))}${row('Litros consumidos',fN(totC,1)+' L')}${row('Preço médio',totL>0?'R$ '+fN(totV/totL)+'/L':'—')}</div>
-    <div class="report-section"><h4>POR CAMINHÃO</h4>${S.trucks.map(tk=>{const saldo=getSaldoAnterior(tk.id,null);const ab=S.fuels.filter(f=>String(f.truck)===String(tk.id));const tL=ab.reduce((a,f)=>a+f.litros,0);const cons=trips.filter(t=>String(t.truck)===String(tk.id)).reduce((a,t)=>a+(t.consumido_real||0),0);return row(tk.mod+' ('+tk.placa+')',`Abast: ${fN(tL,1)}L · Cons: ${fN(cons,1)}L · Saldo: ${fN(saldo,1)}L`);}).join('')}</div>`;
+    <div class="report-section"><h4>POR CAMINHÃO</h4>${S.trucks.map(tk=>{const saldo=getSaldoAnterior(tk.id,null);const ab=fuels.filter(f=>String(f.truck)===String(tk.id));const tL=ab.reduce((a,f)=>a+f.litros,0);const cons=trips.filter(t=>String(t.truck)===String(tk.id)).reduce((a,t)=>a+(t.consumido_real||0),0);return row(tk.mod+' ('+tk.placa+')',`Abast: ${fN(tL,1)}L · Cons: ${fN(cons,1)}L · Saldo: ${fN(saldo,1)}L`);}).join('')}</div>`;
   } else {
     title='DRE Operacional';
     const fat=trips.reduce((a,t)=>a+(t.frete||0),0),dsl=trips.reduce((a,t)=>a+(t.custo_dsl||0),0),dslv=trips.reduce((a,t)=>a+(t.custo_vazio||0),0),ped=trips.reduce((a,t)=>a+(t.pedagio||0),0),com=trips.reduce((a,t)=>a+(t.com||0),0),seg=trips.reduce((a,t)=>a+(t.seg||0),0),ipva=trips.reduce((a,t)=>a+(t.ipva||0),0),man=trips.reduce((a,t)=>a+(t.man||0),0);
@@ -987,7 +1022,7 @@ function openReport(type){
 
 // ===================== KPIs =====================
 function updateKPIs(){
-  const trips=S.trips;
+  const trips=filterByMonth(S.trips);
   const fat=trips.reduce((a,t)=>a+(t.frete||0),0),luc=trips.reduce((a,t)=>a+(t.luc||0),0),km=trips.reduce((a,t)=>a+(t.km||0),0),mg=fat>0?luc/fat*100:0;
   const meds=trips.filter(t=>t.media_real>0).map(t=>t.media_real);const kml=meds.length?meds.reduce((a,b)=>a+b,0)/meds.length:0;
   const totC=trips.reduce((a,t)=>a+(t.consumido_real||0),0),totDsl=trips.reduce((a,t)=>a+(t.custo_dsl||0),0);
@@ -998,10 +1033,10 @@ function updateKPIs(){
   document.getElementById('k-km').textContent=km>0?km.toLocaleString('pt-BR')+' km':'0 km';document.getElementById('k-km-sub').textContent=trips.length&&km?'Média: '+Math.round(km/trips.length).toLocaleString('pt-BR')+' km':'—';
   document.getElementById('k-kml').textContent=kml>0?fN(kml)+' km/l':'0 km/l';
   document.getElementById('k-dsl').textContent=fR(totDsl);document.getElementById('k-dsl-sub').textContent=fN(totC,1)+' L consumidos';
-  document.getElementById('sq-total').textContent=trips.length;
-  document.getElementById('sq-ok').textContent=trips.filter(t=>t.status==='Aprovada').length;
-  document.getElementById('sq-and').textContent=trips.filter(t=>t.status==='Em andamento').length;
-  document.getElementById('sq-wait').textContent=trips.filter(t=>t.status==='Aguardando').length;
+  document.getElementById('sq-total').textContent=filterByMonth(S.trips).length;
+  document.getElementById('sq-ok').textContent=filterByMonth(S.trips).filter(t=>t.status==='Aprovada').length;
+  document.getElementById('sq-and').textContent=filterByMonth(S.trips).filter(t=>t.status==='Em andamento').length;
+  document.getElementById('sq-wait').textContent=filterByMonth(S.trips).filter(t=>t.status==='Aguardando').length;
 }
 
 // ===================== FLEET / ALERTS =====================
@@ -1014,8 +1049,8 @@ function renderFleet(){
 
 function renderAlerts(){
   const alerts=[];
-  const wait=S.trips.filter(t=>t.status==='Aguardando').length;if(wait>0)alerts.push({c:'alert-yellow',i:'ti-alert-circle',t:'Aguardando conferência',s:wait+' viagem(ns)'});
-  const prej=S.trips.filter(t=>t.status==='Prejuízo').length;if(prej>0)alerts.push({c:'alert-red',i:'ti-alert-triangle',t:'Viagens com prejuízo',s:prej+' viagem(ns)'});
+  const wait=filterByMonth(S.trips).filter(t=>t.status==='Aguardando').length;if(wait>0)alerts.push({c:'alert-yellow',i:'ti-alert-circle',t:'Aguardando conferência',s:wait+' viagem(ns)'});
+  const prej=filterByMonth(S.trips).filter(t=>t.status==='Prejuízo').length;if(prej>0)alerts.push({c:'alert-red',i:'ti-alert-triangle',t:'Viagens com prejuízo',s:prej+' viagem(ns)'});
   S.trucks.filter(x=>x.status==='Ativo').forEach(tk=>{const saldo=getSaldoAnterior(tk.id,null);const cap=tk.tanque||600;const pct=cap>0?saldo/cap*100:100;if(pct<15)alerts.push({c:'alert-red',i:'ti-gas-station',t:'Tanque crítico: '+tk.placa,s:fN(saldo,1)+' L'});else if(pct<25)alerts.push({c:'alert-yellow',i:'ti-droplet',t:'Tanque baixo: '+tk.placa,s:fN(saldo,1)+' L'});});
   const nb=document.getElementById('ntfBadge');nb.textContent=alerts.length;nb.style.display=alerts.length?'flex':'none';
   document.getElementById('alertList').innerHTML=alerts.length?alerts.map(a=>`<div class="alert-item"><div class="ai-ico ${a.c}"><i class="ti ${a.i}"></i></div><div class="ai-text"><strong>${a.t}</strong><small>${a.s}</small></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--text3);font-size:14px"></i></div>`).join(''):'<p style="font-size:11px;color:var(--text2);padding:8px 0">Nenhum alerta.</p>';
@@ -1025,13 +1060,23 @@ function renderAlerts(){
 // ===================== CHARTS =====================
 let lineC,donutC;
 function buildCharts(){
-  const days=Array.from({length:31},(_,i)=>String(i+1).padStart(2,'0'));
-  const fat=days.map(()=>0),luc=days.map(()=>0);
-  S.trips.forEach(t=>{if(t.dt){const d=parseInt((t.dt||'').split('-')[2]||'1')-1;if(d>=0&&d<31){fat[d]+=(t.frete||0);luc[d]+=(t.luc||0);}}});
+  const r=getMonthRange();
+  const yearN=parseInt(r.start.split('-')[0]);
+  const monthN=parseInt(r.start.split('-')[1]);
+  const daysInMonth=new Date(yearN,monthN,0).getDate();
+  const days=Array.from({length:daysInMonth},function(_,i){return String(i+1).padStart(2,'0');});
+  const fat=days.map(function(){return 0;});
+  const luc=days.map(function(){return 0;});
+  filterByMonth(S.trips).forEach(function(t){
+    if(t.dt){
+      const d=parseInt((t.dt||'').split('-')[2]||'1')-1;
+      if(d>=0&&d<daysInMonth){fat[d]+=(t.frete||0);luc[d]+=(t.luc||0);}
+    }
+  });;
   const ctx1=document.getElementById('lineChart');if(!ctx1)return;
   if(lineC){lineC.destroy();lineC=null;}
   lineC=new Chart(ctx1,{type:'line',data:{labels:days,datasets:[{label:'Faturamento',data:fat,borderColor:'#009B3A',backgroundColor:'rgba(0,155,58,.07)',tension:.4,pointRadius:1.5,fill:true,borderWidth:2},{label:'Lucro',data:luc,borderColor:'#3B82F6',backgroundColor:'rgba(59,130,246,.04)',tension:.4,pointRadius:1.5,fill:true,borderDash:[4,3],borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:8},maxRotation:0,color:'#94A3B8'},grid:{display:false}},y:{ticks:{font:{size:8},color:'#94A3B8',callback:v=>'R$'+Math.round(v/1000)+'k'},grid:{color:'rgba(0,0,0,.04)'}}}}});
-  const trips=S.trips;const dsl=trips.reduce((a,t)=>a+(t.custo_dsl||0),0),dslv=trips.reduce((a,t)=>a+(t.custo_vazio||0),0),com=trips.reduce((a,t)=>a+(t.com||0),0),ped=trips.reduce((a,t)=>a+(t.pedagio||0),0),man=trips.reduce((a,t)=>a+(t.man||0),0),seg=trips.reduce((a,t)=>a+(t.seg||0),0),ipva=trips.reduce((a,t)=>a+(t.ipva||0),0);
+  const trips=filterByMonth(S.trips);const dsl=trips.reduce((a,t)=>a+(t.custo_dsl||0),0),dslv=trips.reduce((a,t)=>a+(t.custo_vazio||0),0),com=trips.reduce((a,t)=>a+(t.com||0),0),ped=trips.reduce((a,t)=>a+(t.pedagio||0),0),man=trips.reduce((a,t)=>a+(t.man||0),0),seg=trips.reduce((a,t)=>a+(t.seg||0),0),ipva=trips.reduce((a,t)=>a+(t.ipva||0),0);
   const tot=dsl+dslv+com+ped+man+seg+ipva||1;const p=v=>+(v/tot*100).toFixed(1);
   const dVals=[p(dsl),p(dslv),p(com),p(ped),p(man),p(seg),p(ipva)];
   const dLabels=['Diesel','Diesel vazio','Comissão','Pedágios','Manutenção','Seguro','IPVA'];
