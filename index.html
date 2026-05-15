@@ -677,6 +677,8 @@ function renderTripsPage(){
   document.getElementById('allTripBody').innerHTML=rows.length?rows.map(function(t){
     var fretekm=t.km>0&&t.frete>0?t.frete/t.km:null;
     var luckm=t.km>0&&t.luc!=null?t.luc/t.km:null;
+    var luckmCls=luckm!=null?(luckm>=0?'profit-pos':'profit-neg'):'';
+    var luckmVal=luckm!=null?'R$ '+fN(luckm):'—';
     return'<tr onclick="openTripDetail('+t.id+')">'
       +'<td>'+sbadge(t.status)+'</td>'
       +'<td>'+(t.dt||'—')+'</td>'
@@ -686,7 +688,7 @@ function renderTripsPage(){
       +'<td>'+fR(t.frete)+'</td>'
       +'<td>'+(fretekm!=null?'R$ '+fN(fretekm):'—')+'</td>'
       +'<td class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</td>'
-      +'<td class="'+(luckm!=null?(luckm>=0?'profit-pos':'profit-neg'):'')+'>'+(luckm!=null?'R$ '+fN(luckm):'—')+'</td>'
+      +'<td class="'+luckmCls+'">'+luckmVal+'</td>'
       +'<td class="'+mcls(t.mg)+'">'+(t.mg!=null?fN(t.mg)+'%':'—')+'</td>'
       +'<td>'+(t.media_real>0?fN(t.media_real)+' km/l':'—')+'</td>'
       +'<td style="white-space:nowrap"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openTripModal('+t.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-red btn-sm" style="margin-left:4px" onclick="event.stopPropagation();confirmDelete(\'trip\','+t.id+')"><i class="ti ti-trash"></i></button></td>'
