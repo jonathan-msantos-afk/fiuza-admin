@@ -831,9 +831,12 @@ function openReport(type){
   var trips=filterMonth(S.trips).filter(function(t){return t.status==='Aprovada'||t.status==='Prejuízo';});
   var fuels=filterMonth(S.fuels);
   var title='',html='';
+  // mês de referência para exibir no cabeçalho
+  var sel=document.getElementById('monthSel');
+  var mesRef=sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'';
   function row(l,v,cls){return'<div class="report-row"><span>'+l+'</span><span class="'+(cls||'')+'">'+v+'</span></div>';}
   if(type==='viagens'){
-    title='Relatório de Viagens';
+    title='Relatório de Viagens — '+mesRef;
     var fat=trips.reduce(function(a,t){return a+(t.frete||0);},0);
     var luc=trips.reduce(function(a,t){return a+(t.luc||0);},0);
     var km=trips.reduce(function(a,t){return a+(t.km||0);},0);
@@ -860,13 +863,13 @@ function openReport(type){
       +'</tr>';}).join('')
     +'</tbody></table></div>';
   }else if(type==='diesel'){
-    title='Relatório de Diesel';
+    title='Relatório de Diesel — '+mesRef;
     var totL=fuels.reduce(function(a,f){return a+f.litros;},0);
     var totV=fuels.reduce(function(a,f){return a+f.val;},0);
     var totC=trips.reduce(function(a,t){return a+(t.consumido_real||0);},0);
     html='<div class="report-section"><h4>RESUMO</h4>'+row('Litros abastecidos',fN(totL,1)+' L')+row('Custo abastecimento',fR(totV))+row('Litros consumidos',fN(totC,1)+' L')+row('Preço médio',totL>0?'R$ '+fN(totV/totL)+'/L':'—')+'</div><div class="report-section"><h4>POR CAMINHÃO</h4>'+S.trucks.map(function(tk){var saldo=getSaldoAnt(tk.id,null);var ab=fuels.filter(function(f){return String(f.truck)===String(tk.id);});var tL=ab.reduce(function(a,f){return a+f.litros;},0);var cons=trips.filter(function(t){return String(t.truck)===String(tk.id);}).reduce(function(a,t){return a+(t.consumido_real||0);},0);return row(tk.mod+' ('+tk.placa+')','Abast: '+fN(tL,1)+'L · Cons: '+fN(cons,1)+'L · Saldo: '+fN(saldo,1)+'L');}).join('')+'</div>';
   }else{
-    title='DRE Operacional';
+    title='DRE Operacional — '+mesRef;
     var fat2=trips.reduce(function(a,t){return a+(t.frete||0);},0);
     var dsl=trips.reduce(function(a,t){return a+(t.custo_dsl||0);},0);
     var dslv=trips.reduce(function(a,t){return a+(t.custo_vazio||0);},0);
