@@ -251,6 +251,7 @@ textarea{resize:vertical;min-height:65px}
         <div class="kpi"><div class="kpi-ico"><i class="ti ti-list"></i></div><div class="kpi-lbl">REGISTROS</div><div class="kpi-val" id="f-cnt">0</div></div>
       </div>
       <div class="tcard" style="margin-bottom:14px"><div class="thead-bar"><h3>Saldo por caminhão <span class="est-tag">ESTIMADO</span></h3></div><div style="padding:14px" id="tankSaldoArea"></div></div>
+      <div class="tcard" style="margin-bottom:14px"><div class="thead-bar"><h3>Deslocamentos vazios do período <span class="est-tag">ESTIMADO</span></h3></div><div id="vazioArea"><div style="padding:14px"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:9px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)">CAMINHÃO</th><th style="padding:9px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)">KM VAZIO</th><th style="padding:9px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)">DIESEL EST.</th><th style="padding:9px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)">CUSTO EST.</th><th style="padding:9px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)">PREÇO DSL</th></tr></thead><tbody id="vazioBody"></tbody></table></div></div></div>
       <div class="tcard"><div class="thead-bar"><h3>Histórico</h3></div><div class="tbl-wrap"><table><thead><tr><th>DATA</th><th>MOTORISTA</th><th>PLACA</th><th>POSTO</th><th>LITROS</th><th>VALOR</th><th>R$/L</th><th>KM</th><th>ORIGEM</th><th>AÇÕES</th></tr></thead><tbody id="fuelBody"></tbody></table></div></div>
     </div>
     <div id="page-caminhoes" class="page">
@@ -508,10 +509,12 @@ function getSaldoAnt(tid,excl){
 }
 function getKmVazio(tid,ki,excl){
   if(!ki||ki<=0)return 0;
-  var ult=S.trips.filter(function(t){return String(t.truck)===String(tid)&&t.id!=excl&&t.km_f>0;}).sort(function(a,b){return b.id-a.id;});
+  var ult=S.trips.filter(function(t){
+    return String(t.truck)===String(tid)&&t.id!=excl&&t.km_f>0&&t.km_f<ki;
+  }).sort(function(a,b){return b.km_f-a.km_f;});
   if(!ult.length)return 0;
-  var d=ki-ult[0].km_f;
-  return d>0&&d<2000?d:0;
+  var diff=ki-ult[0].km_f;
+  return diff>0&&diff<=500?diff:0;
 }
 function calcFull(o){
   var truck=o.truck,ki=o.km_i||0,kf=o.km_f||0,km=kf-ki;
@@ -521,6 +524,7 @@ function calcFull(o){
   var mr=km>0&&cr>0?+(km/cr):0;
   var pd=lit>0&&vab>0?vab/lit:0;
   var cd=cr>0&&pd>0?+(cr*pd):vab;
+  // KM vazio calculado mas NÃO incluído no custo da viagem
   var kv=getKmVazio(truck,ki,tid);
   var dv=kv>0&&mh>0?+(kv/mh).toFixed(2):0;
   var cv=dv>0&&pd>0?+(dv*pd):0;
@@ -530,7 +534,8 @@ function calcFull(o){
   var seg=km*getSeguro();
   var ipva=km*getIPVA();
   var man=km*getManut();
-  var ct=cd+cv+ped+com+seg+ipva+man;
+  // custo total SEM custo vazio — vazio vai para painel de frota
+  var ct=cd+ped+com+seg+ipva+man;
   var luc=frt-ct;
   var mg=frt>0?+(luc/frt*100):0;
   var lkm=km>0?+(luc/km):0;
@@ -716,7 +721,39 @@ async function saveFuel(){
   renderAll();closeM('mFuel');showToast('Abastecimento salvo!');
 }
 
-function renderFuels(){
+function renderVazios(){
+  var tbody=document.getElementById('vazioBody');
+  if(!tbody)return;
+  var trips=filterMonth(S.trips);
+  var ativos=S.trucks.filter(function(t){return t.status==='Ativo';});
+  var rows=[];
+  ativos.forEach(function(tk){
+    var tvs=trips.filter(function(t){return String(t.truck)===String(tk.id)&&t.km_vazio>0;});
+    if(!tvs.length)return;
+    var totalKmV=tvs.reduce(function(a,t){return a+(t.km_vazio||0);},0);
+    var totalDslV=tvs.reduce(function(a,t){return a+(t.dsl_vazio_est||0);},0);
+    var totalCustV=tvs.reduce(function(a,t){return a+(t.custo_vazio||0);},0);
+    // preço médio diesel das viagens do caminhão no período
+    var pdList=tvs.filter(function(t){return t.preco_dsl>0;});
+    var pdMed=pdList.length?pdList.reduce(function(a,t){return a+t.preco_dsl;},0)/pdList.length:0;
+    rows.push({tk:tk,kmv:totalKmV,dslv:totalDslV,custv:totalCustV,pd:pdMed});
+  });
+  if(!rows.length){
+    tbody.innerHTML='<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--text2);font-size:12px">Nenhum deslocamento vazio registrado neste período.</td></tr>';
+    return;
+  }
+  tbody.innerHTML=rows.map(function(r){
+    return'<tr>'
+      +'<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)"><strong>'+r.tk.mod+'</strong> <span style="color:var(--text2);font-size:10px">'+r.tk.placa+'</span></td>'
+      +'<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)">'+fK(r.kmv)+'</td>'
+      +'<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)">'+fN(r.dslv,1)+' L <span class="est-tag">est.</span></td>'
+      +'<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--red);font-weight:600">'+fR(r.custv)+' <span class="est-tag">est.</span></td>'
+      +'<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--text2)">R$ '+fN(r.pd)+'/L</td>'
+      +'</tr>';
+  }).join('');
+}
+
+
   var fuels=filterMonth(S.fuels);
   document.getElementById('fuelBody').innerHTML=fuels.length?fuels.map(function(f){return'<tr><td>'+f.dt+'</td><td>'+f.motorista_nome+'</td><td>'+f.placa+'</td><td>'+(f.posto||'—')+'</td><td><strong>'+fN(f.litros,1)+' L</strong></td><td>'+fR(f.val)+'</td><td>R$ '+fN(f.preco)+'</td><td>'+(f.km?f.km.toLocaleString('pt-BR'):'—')+'</td><td>'+(f.auto?'<span class="badge b-blue">Auto</span>':'')+'</td><td><button class="btn btn-outline btn-sm" onclick="openFuelModal('+f.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-red btn-sm" style="margin-left:4px" onclick="confirmDelete(\'fuel\','+f.id+')"><i class="ti ti-trash"></i></button></td></tr>';}).join(''):'<tr><td colspan="10" style="text-align:center;color:var(--text2);padding:20px">Nenhum registro</td></tr>';
   var totL=fuels.reduce(function(a,f){return a+f.litros;},0),totV=fuels.reduce(function(a,f){return a+f.val;},0);
@@ -725,6 +762,7 @@ function renderFuels(){
   document.getElementById('f-avg').textContent=totL>0?'R$ '+fN(totV/totL)+'/L':'—';
   document.getElementById('f-cnt').textContent=fuels.length;
   renderTankSaldo();
+  renderVazios();
 }
 function renderTankSaldo(){
   var area=document.getElementById('tankSaldoArea');
@@ -872,6 +910,7 @@ function openReport(type){
     title='DRE Operacional — '+mesRef;
     var fat2=trips.reduce(function(a,t){return a+(t.frete||0);},0);
     var dsl=trips.reduce(function(a,t){return a+(t.custo_dsl||0);},0);
+    // custo vazio vem do painel de frota, não das viagens individuais
     var dslv=trips.reduce(function(a,t){return a+(t.custo_vazio||0);},0);
     var ped=trips.reduce(function(a,t){return a+(t.pedagio||0);},0);
     var com=trips.reduce(function(a,t){return a+(t.com||0);},0);
