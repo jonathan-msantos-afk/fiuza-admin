@@ -733,24 +733,25 @@ function renderVazios(){
     var totalKmV=tvs.reduce(function(a,t){return a+(t.km_vazio||0);},0);
     var totalDslV=tvs.reduce(function(a,t){return a+(t.dsl_vazio_est||0);},0);
     var totalCustV=tvs.reduce(function(a,t){return a+(t.custo_vazio||0);},0);
-    // preço médio diesel das viagens do caminhão no período
     var pdList=tvs.filter(function(t){return t.preco_dsl>0;});
     var pdMed=pdList.length?pdList.reduce(function(a,t){return a+t.preco_dsl;},0)/pdList.length:0;
     rows.push({tk:tk,kmv:totalKmV,dslv:totalDslV,custv:totalCustV,pd:pdMed});
   });
   if(!rows.length){
-    tbody.innerHTML='<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--text2);font-size:12px">Nenhum deslocamento vazio registrado neste período.</td></tr>';
+    tbody.innerHTML='<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--text2);font-size:12px">Nenhum deslocamento vazio neste período.</td></tr>';
     return;
   }
-  tbody.innerHTML=rows.map(function(r){
-    return'<tr>'
-      +'<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)"><strong>'+r.tk.mod+'</strong> <span style="color:var(--text2);font-size:10px">'+r.tk.placa+'</span></td>'
-      +'<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)">'+fK(r.kmv)+'</td>'
-      +'<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)">'+fN(r.dslv,1)+' L <span class="est-tag">est.</span></td>'
-      +'<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--red);font-weight:600">'+fR(r.custv)+' <span class="est-tag">est.</span></td>'
-      +'<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--text2)">R$ '+fN(r.pd)+'/L</td>'
-      +'</tr>';
-  }).join('');
+  var html='';
+  rows.forEach(function(r){
+    html+='<tr>';
+    html+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)"><strong>'+r.tk.mod+'</strong> <span style="color:var(--text2);font-size:10px">'+r.tk.placa+'</span></td>';
+    html+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)">'+fK(r.kmv)+'</td>';
+    html+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)">'+fN(r.dslv,1)+' L <span class="est-tag">est.</span></td>';
+    html+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--red);font-weight:600">'+fR(r.custv)+' <span class="est-tag">est.</span></td>';
+    html+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--text2)">R$ '+fN(r.pd)+'/L</td>';
+    html+='</tr>';
+  });
+  tbody.innerHTML=html;
 }
 
 
