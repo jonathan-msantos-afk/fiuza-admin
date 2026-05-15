@@ -239,7 +239,7 @@ textarea{resize:vertical;min-height:65px}
           <input type="text" placeholder="Buscar..." style="width:150px" oninput="renderTripsPage()">
           <select style="width:140px" id="statusFilter" onchange="renderTripsPage()"><option value="">Todos status</option><option>Aprovada</option><option>Aguardando</option><option>Em andamento</option><option>Prejuízo</option></select>
         </div>
-        <div class="tbl-wrap"><table><thead><tr><th>STATUS</th><th>DATA</th><th>MOTORISTA</th><th>ROTA</th><th>KM</th><th>FRETE</th><th>FAT/KM</th><th>LUCRO</th><th>LUCRO/KM</th><th>MARGEM</th><th>KM/L</th><th>AÇÕES</th></tr></thead><tbody id="allTripBody"></tbody></table></div>
+        <div class="tbl-wrap"><table><thead><tr><th>STATUS</th><th>DATA</th><th>MOTORISTA</th><th>ROTA</th><th>KM</th><th>FRETE</th><th>FRETE/KM</th><th>LUCRO</th><th>LUCRO/KM</th><th>MARGEM</th><th>KM/L</th><th>AÇÕES</th></tr></thead><tbody id="allTripBody"></tbody></table></div>
       </div>
     </div>
     <div id="page-abastecimentos" class="page">
@@ -675,9 +675,22 @@ function renderTripsPage(){
   var sf=document.getElementById('statusFilter')?document.getElementById('statusFilter').value:'';
   var rows=filterMonth(S.trips).filter(function(t){return!sf||t.status===sf;});
   document.getElementById('allTripBody').innerHTML=rows.length?rows.map(function(t){
-    var fatkm=t.km>0&&t.frete>0?t.frete/t.km:null;
+    var fretekm=t.km>0&&t.frete>0?t.frete/t.km:null;
     var luckm=t.km>0&&t.luc!=null?t.luc/t.km:null;
-    return'<tr onclick="openTripDetail('+t.id+')"><td>'+sbadge(t.status)+'</td><td>'+(t.dt||'—')+'</td><td>'+t.motorista_nome+'</td><td>'+t.ori+' → '+t.dst+'</td><td>'+fK(t.km)+'</td><td>'+fR(t.frete)+'</td><td>'+(fatkm!=null?'R$ '+fN(fatkm):'—')+'</td><td class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</td><td class="'+(luckm!=null?(luckm>=0?'profit-pos':'profit-neg'):'')+'>'+(luckm!=null?'R$ '+fN(luckm):'—')+'</td><td class="'+mcls(t.mg)+'">'+(t.mg!=null?fN(t.mg)+'%':'—')+'</td><td>'+(t.media_real>0?fN(t.media_real)+' km/l':'—')+'</td><td style="white-space:nowrap"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openTripModal('+t.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-red btn-sm" style="margin-left:4px" onclick="event.stopPropagation();confirmDelete(\'trip\','+t.id+')"><i class="ti ti-trash"></i></button></td></tr>';
+    return'<tr onclick="openTripDetail('+t.id+')">'
+      +'<td>'+sbadge(t.status)+'</td>'
+      +'<td>'+(t.dt||'—')+'</td>'
+      +'<td>'+t.motorista_nome+'</td>'
+      +'<td>'+t.ori+' → '+t.dst+'</td>'
+      +'<td>'+fK(t.km)+'</td>'
+      +'<td>'+fR(t.frete)+'</td>'
+      +'<td>'+(fretekm!=null?'R$ '+fN(fretekm):'—')+'</td>'
+      +'<td class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</td>'
+      +'<td class="'+(luckm!=null?(luckm>=0?'profit-pos':'profit-neg'):'')+'>'+(luckm!=null?'R$ '+fN(luckm):'—')+'</td>'
+      +'<td class="'+mcls(t.mg)+'">'+(t.mg!=null?fN(t.mg)+'%':'—')+'</td>'
+      +'<td>'+(t.media_real>0?fN(t.media_real)+' km/l':'—')+'</td>'
+      +'<td style="white-space:nowrap"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openTripModal('+t.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-red btn-sm" style="margin-left:4px" onclick="event.stopPropagation();confirmDelete(\'trip\','+t.id+')"><i class="ti ti-trash"></i></button></td>'
+      +'</tr>';
   }).join(''):'<tr><td colspan="12" style="text-align:center;color:var(--text2);padding:24px">Nenhuma viagem</td></tr>';
 }
 
