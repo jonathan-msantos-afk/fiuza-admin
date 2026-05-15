@@ -239,7 +239,7 @@ textarea{resize:vertical;min-height:65px}
           <input type="text" placeholder="Buscar..." style="width:150px" oninput="renderTripsPage()">
           <select style="width:140px" id="statusFilter" onchange="renderTripsPage()"><option value="">Todos status</option><option>Aprovada</option><option>Aguardando</option><option>Em andamento</option><option>Prejuízo</option></select>
         </div>
-        <div class="tbl-wrap"><table><thead><tr><th>STATUS</th><th>DATA</th><th>MOTORISTA</th><th>ROTA</th><th>KM</th><th>FRETE</th><th>LUCRO</th><th>MARGEM</th><th>KM/L</th><th>AÇÕES</th></tr></thead><tbody id="allTripBody"></tbody></table></div>
+        <div class="tbl-wrap"><table><thead><tr><th>STATUS</th><th>DATA</th><th>MOTORISTA</th><th>ROTA</th><th>KM</th><th>FRETE</th><th>FAT/KM</th><th>LUCRO</th><th>LUCRO/KM</th><th>MARGEM</th><th>KM/L</th><th>AÇÕES</th></tr></thead><tbody id="allTripBody"></tbody></table></div>
       </div>
     </div>
     <div id="page-abastecimentos" class="page">
@@ -674,7 +674,11 @@ function renderDashTrips(){
 function renderTripsPage(){
   var sf=document.getElementById('statusFilter')?document.getElementById('statusFilter').value:'';
   var rows=filterMonth(S.trips).filter(function(t){return!sf||t.status===sf;});
-  document.getElementById('allTripBody').innerHTML=rows.length?rows.map(function(t){return'<tr onclick="openTripDetail('+t.id+')"><td>'+sbadge(t.status)+'</td><td>'+(t.dt||'—')+'</td><td>'+t.motorista_nome+'</td><td>'+t.ori+' → '+t.dst+'</td><td>'+fK(t.km)+'</td><td>'+fR(t.frete)+'</td><td class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</td><td class="'+mcls(t.mg)+'">'+(t.mg!=null?fN(t.mg)+'%':'—')+'</td><td>'+(t.media_real>0?fN(t.media_real)+' km/l':'—')+'</td><td style="white-space:nowrap"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openTripModal('+t.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-red btn-sm" style="margin-left:4px" onclick="event.stopPropagation();confirmDelete(\'trip\','+t.id+')"><i class="ti ti-trash"></i></button></td></tr>';}).join(''):'<tr><td colspan="10" style="text-align:center;color:var(--text2);padding:24px">Nenhuma viagem</td></tr>';
+  document.getElementById('allTripBody').innerHTML=rows.length?rows.map(function(t){
+    var fatkm=t.km>0&&t.frete>0?t.frete/t.km:null;
+    var luckm=t.km>0&&t.luc!=null?t.luc/t.km:null;
+    return'<tr onclick="openTripDetail('+t.id+')"><td>'+sbadge(t.status)+'</td><td>'+(t.dt||'—')+'</td><td>'+t.motorista_nome+'</td><td>'+t.ori+' → '+t.dst+'</td><td>'+fK(t.km)+'</td><td>'+fR(t.frete)+'</td><td>'+(fatkm!=null?'R$ '+fN(fatkm):'—')+'</td><td class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</td><td class="'+(luckm!=null?(luckm>=0?'profit-pos':'profit-neg'):'')+'>'+(luckm!=null?'R$ '+fN(luckm):'—')+'</td><td class="'+mcls(t.mg)+'">'+(t.mg!=null?fN(t.mg)+'%':'—')+'</td><td>'+(t.media_real>0?fN(t.media_real)+' km/l':'—')+'</td><td style="white-space:nowrap"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openTripModal('+t.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-red btn-sm" style="margin-left:4px" onclick="event.stopPropagation();confirmDelete(\'trip\','+t.id+')"><i class="ti ti-trash"></i></button></td></tr>';
+  }).join(''):'<tr><td colspan="12" style="text-align:center;color:var(--text2);padding:24px">Nenhuma viagem</td></tr>';
 }
 
 function openFuelModal(id){
@@ -821,8 +825,10 @@ function openReport(type){
     var mg=fat>0?luc/fat*100:0;
     var meds=trips.filter(function(t){return t.media_real>0;}).map(function(t){return t.media_real;});
     var kml=meds.length?meds.reduce(function(a,b){return a+b;},0)/meds.length:0;
+    var fatkm=km>0&&fat>0?fat/km:0;
+    var luckm=km>0?luc/km:0;
     var motList=[...new Set(trips.map(function(t){return t.motorista_nome;}))];
-    html='<div class="report-section"><h4>RESUMO</h4>'+row('Viagens',trips.length)+row('Faturamento',fR(fat),'profit-pos')+row('KM total',fK(km))+row('Lucro',fR(luc),luc>=0?'profit-pos':'profit-neg')+row('Margem',fN(mg)+'%',mcls(mg))+row('Média km/l',kml>0?fN(kml)+' km/l':'—')+'</div><div class="report-section"><h4>POR MOTORISTA</h4>'+motList.map(function(n){var tt=trips.filter(function(t){return t.motorista_nome===n;});var tf=tt.reduce(function(a,t){return a+(t.frete||0);},0);var tl=tt.reduce(function(a,t){return a+(t.luc||0);},0);return row(n,tt.length+' viagens · '+fR(tf),tl>=0?'profit-pos':'profit-neg');}).join('')+'</div>';
+    html='<div class="report-section"><h4>RESUMO</h4>'+row('Viagens',trips.length)+row('Faturamento',fR(fat),'profit-pos')+row('KM total',fK(km))+row('Lucro',fR(luc),luc>=0?'profit-pos':'profit-neg')+row('Margem',fN(mg)+'%',mcls(mg))+row('Média km/l',kml>0?fN(kml)+' km/l':'—')+row('Média faturamento/km',fatkm>0?'R$ '+fN(fatkm):'-')+row('Média lucro/km',km>0?'R$ '+fN(luckm):'-',luckm>=0?'profit-pos':'profit-neg')+'</div><div class="report-section"><h4>POR MOTORISTA</h4>'+motList.map(function(n){var tt=trips.filter(function(t){return t.motorista_nome===n;});var tf=tt.reduce(function(a,t){return a+(t.frete||0);},0);var tl=tt.reduce(function(a,t){return a+(t.luc||0);},0);return row(n,tt.length+' viagens · '+fR(tf),tl>=0?'profit-pos':'profit-neg');}).join('')+'</div>';
   }else if(type==='diesel'){
     title='Relatório de Diesel';
     var totL=fuels.reduce(function(a,f){return a+f.litros;},0);
@@ -840,7 +846,11 @@ function openReport(type){
     var ipva=trips.reduce(function(a,t){return a+(t.ipva||0);},0);
     var man=trips.reduce(function(a,t){return a+(t.man||0);},0);
     var ctot=dsl+dslv+ped+com+seg+ipva+man;var luc2=fat2-ctot;var mg2=fat2>0?luc2/fat2*100:0;
-    html='<div class="report-section"><h4>DRE</h4>'+row('(+) Faturamento',fR(fat2),'profit-pos')+row('(-) Diesel',fR(dsl),'profit-neg')+row('(-) Diesel vazio',fR(dslv),'profit-neg')+row('(-) Pedágios',fR(ped),'profit-neg')+row('(-) Comissão',fR(com),'profit-neg')+row('(-) Seguro',fR(seg),'profit-neg')+row('(-) IPVA',fR(ipva),'profit-neg')+row('(-) Manutenção',fR(man),'profit-neg')+row('(=) Custo total',fR(ctot),'profit-neg')+'</div><div class="report-total"><div class="rt-item"><small>Faturamento</small><strong>'+fR(fat2)+'</strong></div><div class="rt-item"><small>Lucro</small><strong class="'+(luc2>=0?'profit-pos':'profit-neg')+'">'+fR(luc2)+'</strong></div><div class="rt-item"><small>Margem</small><strong class="'+mcls(mg2)+'">'+fN(mg2)+'%</strong></div></div>';
+    var km2=trips.reduce(function(a,t){return a+(t.km||0);},0);
+    var fatkm2=km2>0?fat2/km2:0;
+    var custkm=km2>0?ctot/km2:0;
+    var luckm2=km2>0?luc2/km2:0;
+    html='<div class="report-section"><h4>DRE</h4>'+row('(+) Faturamento',fR(fat2),'profit-pos')+row('(-) Diesel',fR(dsl),'profit-neg')+row('(-) Diesel vazio',fR(dslv),'profit-neg')+row('(-) Pedágios',fR(ped),'profit-neg')+row('(-) Comissão',fR(com),'profit-neg')+row('(-) Seguro',fR(seg),'profit-neg')+row('(-) IPVA',fR(ipva),'profit-neg')+row('(-) Manutenção',fR(man),'profit-neg')+row('(=) Custo total',fR(ctot),'profit-neg')+'</div><div class="report-total"><div class="rt-item"><small>Faturamento</small><strong>'+fR(fat2)+'</strong></div><div class="rt-item"><small>Lucro</small><strong class="'+(luc2>=0?'profit-pos':'profit-neg')+'">'+fR(luc2)+'</strong></div><div class="rt-item"><small>Margem</small><strong class="'+mcls(mg2)+'">'+fN(mg2)+'%</strong></div></div>'+(km2>0?'<div class="report-section" style="margin-top:14px"><h4>INDICADORES POR KM</h4>'+row('Faturamento/km',km2>0?'R$ '+fN(fatkm2):'-')+row('Custo/km',km2>0?'R$ '+fN(custkm):'-','profit-neg')+row('Lucro/km',km2>0?'R$ '+fN(luckm2):'-',luckm2>=0?'profit-pos':'profit-neg')+'</div>':'');
   }
   document.getElementById('mReport-title').textContent=title;
   document.getElementById('mReportBody').innerHTML=html;
