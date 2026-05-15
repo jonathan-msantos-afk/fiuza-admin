@@ -85,7 +85,6 @@ tr:hover td{background:#FAFBFC;cursor:pointer}
 .ai-ico i{font-size:13px}
 .alert-red{background:var(--red-bg)}.alert-red i{color:var(--red)}
 .alert-yellow{background:var(--yellow-bg)}.alert-yellow i{color:var(--yellow)}
-.alert-blue{background:var(--blue-bg)}.alert-blue i{color:var(--blue)}
 .ai-text strong{font-size:11px;display:block;font-weight:600}
 .ai-text small{color:var(--text2);font-size:10px}
 .grid-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
@@ -213,6 +212,7 @@ textarea{resize:vertical;min-height:65px}
     </div>
   </div>
   <div id="content">
+    <!-- DASHBOARD -->
     <div id="page-dashboard" class="page active">
       <div class="kpi-row">
         <div class="kpi"><div class="kpi-ico"><i class="ti ti-currency-dollar"></i></div><div class="kpi-lbl">FATURAMENTO MÊS</div><div class="kpi-val" id="k-fat">R$ 0</div><div class="kpi-sub" id="k-fat-sub">—</div><div class="pbar"><div class="pfill" id="k-fat-p" style="width:0%"></div></div></div>
@@ -232,6 +232,7 @@ textarea{resize:vertical;min-height:65px}
         <div class="tbl-wrap"><table><thead><tr><th>STATUS</th><th>DATA</th><th>MOTORISTA</th><th>ROTA</th><th>KM</th><th>FRETE</th><th>LUCRO</th><th>MARGEM</th><th>KM/L</th></tr></thead><tbody id="dashTripBody"></tbody></table></div>
       </div>
     </div>
+    <!-- VIAGENS -->
     <div id="page-viagens" class="page">
       <div class="page-head"><h2>Viagens</h2><button class="btn btn-green" onclick="openTripModal()"><i class="ti ti-plus"></i> Nova Viagem</button></div>
       <div class="tcard">
@@ -242,6 +243,7 @@ textarea{resize:vertical;min-height:65px}
         <div class="tbl-wrap"><table><thead><tr><th>STATUS</th><th>DATA</th><th>MOTORISTA</th><th>ROTA</th><th>KM</th><th>FRETE</th><th>FRETE/KM</th><th>LUCRO</th><th>LUCRO/KM</th><th>MARGEM</th><th>KM/L</th><th>AÇÕES</th></tr></thead><tbody id="allTripBody"></tbody></table></div>
       </div>
     </div>
+    <!-- ABASTECIMENTOS -->
     <div id="page-abastecimentos" class="page">
       <div class="page-head"><h2>Abastecimentos</h2><button class="btn btn-green" onclick="openFuelModal()"><i class="ti ti-plus"></i> Registrar</button></div>
       <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
@@ -251,17 +253,28 @@ textarea{resize:vertical;min-height:65px}
         <div class="kpi"><div class="kpi-ico"><i class="ti ti-list"></i></div><div class="kpi-lbl">REGISTROS</div><div class="kpi-val" id="f-cnt">0</div></div>
       </div>
       <div class="tcard" style="margin-bottom:14px"><div class="thead-bar"><h3>Saldo por caminhão <span class="est-tag">ESTIMADO</span></h3></div><div style="padding:14px" id="tankSaldoArea"></div></div>
-      <div class="tcard" style="margin-bottom:14px"><div class="thead-bar"><h3>Deslocamentos vazios do período <span class="est-tag">ESTIMADO</span></h3></div><div id="vazioArea"><div style="padding:14px"><table style="width:100%;border-collapse:collapse"><thead><tr><th style="padding:9px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)">CAMINHÃO</th><th style="padding:9px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)">KM VAZIO</th><th style="padding:9px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)">DIESEL EST.</th><th style="padding:9px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)">CUSTO EST.</th><th style="padding:9px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)">PREÇO DSL</th></tr></thead><tbody id="vazioBody"></tbody></table></div></div></div>
+      <div class="tcard" style="margin-bottom:14px">
+        <div class="thead-bar"><h3>Deslocamentos vazios do período <span class="est-tag">ESTIMADO</span></h3></div>
+        <div style="padding:0">
+          <table>
+            <thead><tr><th>CAMINHÃO</th><th>KM VAZIO</th><th>DIESEL EST.</th><th>CUSTO EST.</th><th>PREÇO DSL</th></tr></thead>
+            <tbody id="vazioBody"></tbody>
+          </table>
+        </div>
+      </div>
       <div class="tcard"><div class="thead-bar"><h3>Histórico</h3></div><div class="tbl-wrap"><table><thead><tr><th>DATA</th><th>MOTORISTA</th><th>PLACA</th><th>POSTO</th><th>LITROS</th><th>VALOR</th><th>R$/L</th><th>KM</th><th>ORIGEM</th><th>AÇÕES</th></tr></thead><tbody id="fuelBody"></tbody></table></div></div>
     </div>
+    <!-- CAMINHÕES -->
     <div id="page-caminhoes" class="page">
       <div class="page-head"><h2>Caminhões</h2><button class="btn btn-green" onclick="openTruckModal()"><i class="ti ti-plus"></i> Cadastrar</button></div>
       <div class="grid-cards" id="truckGrid"></div>
     </div>
+    <!-- MOTORISTAS -->
     <div id="page-motoristas" class="page">
       <div class="page-head"><h2>Motoristas</h2><button class="btn btn-green" onclick="openDriverModal()"><i class="ti ti-plus"></i> Cadastrar</button></div>
       <div class="grid-cards" id="driverGrid"></div>
     </div>
+    <!-- RELATÓRIOS -->
     <div id="page-relatorios" class="page">
       <div class="page-head"><h2>Relatórios</h2><button class="btn btn-green" onclick="window.print()"><i class="ti ti-download"></i> Exportar PDF</button></div>
       <div class="grid-cards" style="grid-template-columns:repeat(3,1fr)">
@@ -270,10 +283,12 @@ textarea{resize:vertical;min-height:65px}
         <div class="ecard" style="cursor:pointer" onclick="openReport('dre')"><div class="ecard-head"><div class="eico"><i class="ti ti-chart-line"></i></div><div><div class="ename">DRE Operacional</div><div class="esub">Resultado financeiro</div></div></div><p style="font-size:11.5px;color:var(--text2)">Faturamento, custos discriminados, lucro e margem.</p></div>
       </div>
     </div>
+    <!-- DESPESAS -->
     <div id="page-despesas" class="page">
       <div class="page-head"><h2>Despesas Fixas</h2><button class="btn btn-green" onclick="openDespModal()"><i class="ti ti-plus"></i> Adicionar</button></div>
       <div class="tcard"><div id="despList"></div></div>
     </div>
+    <!-- CONFIG -->
     <div id="page-config" class="page">
       <div class="page-head"><h2>Configurações</h2></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
@@ -338,11 +353,13 @@ textarea{resize:vertical;min-height:65px}
   </div>
   <div class="modal-foot"><button class="btn btn-green" onclick="saveTrip()"><i class="ti ti-check"></i> Salvar</button><button class="btn btn-outline" onclick="closeM('mTrip')">Cancelar</button></div>
 </div></div>
+
 <div class="modal-bg" id="mDetail"><div class="modal">
   <div class="modal-head"><h2><i class="ti ti-truck"></i><span id="mDetail-title">Detalhe</span></h2><button class="modal-close" onclick="closeM('mDetail')"><i class="ti ti-x"></i></button></div>
   <div class="modal-body" id="mDetailBody"></div>
   <div class="modal-foot" id="mDetailFoot"></div>
 </div></div>
+
 <div class="modal-bg" id="mFuel"><div class="modal" style="max-width:480px">
   <div class="modal-head"><h2><i class="ti ti-gas-station"></i><span id="mFuel-title">Abastecimento</span></h2><button class="modal-close" onclick="closeM('mFuel')"><i class="ti ti-x"></i></button></div>
   <div class="modal-body"><input type="hidden" id="f_id">
@@ -360,6 +377,7 @@ textarea{resize:vertical;min-height:65px}
   </div>
   <div class="modal-foot"><button class="btn btn-green" onclick="saveFuel()"><i class="ti ti-check"></i> Salvar</button><button class="btn btn-outline" onclick="closeM('mFuel')">Cancelar</button></div>
 </div></div>
+
 <div class="modal-bg" id="mTruck"><div class="modal" style="max-width:460px">
   <div class="modal-head"><h2><i class="ti ti-truck"></i><span id="mTruck-title">Caminhão</span></h2><button class="modal-close" onclick="closeM('mTruck')"><i class="ti ti-x"></i></button></div>
   <div class="modal-body"><input type="hidden" id="tk_id">
@@ -375,6 +393,7 @@ textarea{resize:vertical;min-height:65px}
   </div>
   <div class="modal-foot"><button class="btn btn-green" onclick="saveTruck()"><i class="ti ti-check"></i> Salvar</button><button class="btn btn-outline" onclick="closeM('mTruck')">Cancelar</button></div>
 </div></div>
+
 <div class="modal-bg" id="mDriver"><div class="modal" style="max-width:400px">
   <div class="modal-head"><h2><i class="ti ti-id-badge"></i><span id="mDriver-title">Motorista</span></h2><button class="modal-close" onclick="closeM('mDriver')"><i class="ti ti-x"></i></button></div>
   <div class="modal-body"><input type="hidden" id="dr_id">
@@ -387,6 +406,7 @@ textarea{resize:vertical;min-height:65px}
   </div>
   <div class="modal-foot"><button class="btn btn-green" onclick="saveDriver()"><i class="ti ti-check"></i> Salvar</button><button class="btn btn-outline" onclick="closeM('mDriver')">Cancelar</button></div>
 </div></div>
+
 <div class="modal-bg" id="mDesp"><div class="modal" style="max-width:400px">
   <div class="modal-head"><h2><i class="ti ti-receipt"></i><span id="mDesp-title">Despesa Fixa</span></h2><button class="modal-close" onclick="closeM('mDesp')"><i class="ti ti-x"></i></button></div>
   <div class="modal-body"><input type="hidden" id="dp_id">
@@ -399,16 +419,19 @@ textarea{resize:vertical;min-height:65px}
   </div>
   <div class="modal-foot"><button class="btn btn-green" onclick="saveDesp()"><i class="ti ti-check"></i> Salvar</button><button class="btn btn-outline" onclick="closeM('mDesp')">Cancelar</button></div>
 </div></div>
+
 <div class="modal-bg" id="mReport"><div class="modal">
   <div class="modal-head"><h2><i class="ti ti-report"></i><span id="mReport-title">Relatório</span></h2><button class="modal-close" onclick="closeM('mReport')"><i class="ti ti-x"></i></button></div>
   <div class="modal-body" id="mReportBody"></div>
   <div class="modal-foot"><button class="btn btn-green" onclick="window.print()"><i class="ti ti-download"></i> PDF</button><button class="btn btn-outline" onclick="closeM('mReport')">Fechar</button></div>
 </div></div>
+
 <div class="modal-bg" id="mConfirm" style="align-items:center"><div class="confirm-box">
   <i class="ti ti-trash" style="font-size:32px;color:var(--red);margin-bottom:8px"></i>
   <h3>Confirmar exclusão</h3><p id="confirmMsg">Tem certeza?</p>
   <div class="actions"><button class="btn btn-red" id="confirmOk">Excluir</button><button class="btn btn-outline" onclick="closeM('mConfirm')">Cancelar</button></div>
 </div></div>
+
 <div class="toast" id="toast"><i class="ti ti-circle-check" id="toastIcon"></i><span id="toastMsg"></span></div>
 
 <script>
@@ -421,7 +444,7 @@ function fR(v){if(v==null||isNaN(v))return'—';var s=v<0?'-':'';return s+'R$ '+
 function fN(v,d){if(d===undefined)d=2;if(v==null||isNaN(v))return'—';return v.toFixed(d).replace('.',',');}
 function fK(v){return v>0?v.toLocaleString('pt-BR')+' km':'—';}
 function nowDate(){return new Date().toISOString().split('T')[0];}
-function sbadge(s){var m={Aprovada:'b-green',Aguardando:'b-yellow','Em andamento':'b-blue','Prejuízo':'b-red',Cancelada:'b-gray'};return'<span class="badge '+(m[s]||'b-gray')+'">'+s+'</span>';}
+function sbadge(s){var m={Aprovada:'b-green',Aguardando:'b-yellow','Em andamento':'b-blue','Prejuizo':'b-red','Prejuízo':'b-red',Cancelada:'b-gray'};return'<span class="badge '+(m[s]||'b-gray')+'">'+s+'</span>';}
 function mcls(m){return m>=20?'mg-green':m>=10?'mg-yellow':'mg-red';}
 
 function getMonthRange(){
@@ -439,6 +462,10 @@ function filterMonth(arr,field){
   var r=getMonthRange();
   return arr.filter(function(x){return x[field]&&x[field]>=r.start&&x[field]<=r.end;});
 }
+function getMesRef(){
+  var sel=document.getElementById('monthSel');
+  return sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'';
+}
 function populateMonthSel(){
   var sel=document.getElementById('monthSel');
   var months={};
@@ -448,7 +475,13 @@ function populateMonthSel(){
   var sorted=Object.keys(months).sort(function(a,b){return b>a?1:-1;});
   var prev=sel.value;
   var ptM=['','Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-  sel.innerHTML=sorted.map(function(m){var p=m.split('-');return'<option value="'+m+'">'+ptM[parseInt(p[1])]+' / '+p[0]+'</option>';}).join('');
+  sel.innerHTML='';
+  sorted.forEach(function(m){
+    var p=m.split('-');
+    var o=document.createElement('option');
+    o.value=m;o.text=ptM[parseInt(p[1])]+' / '+p[0];
+    sel.appendChild(o);
+  });
   if(sorted.indexOf(prev)>=0)sel.value=prev;
   else if(sorted.length)sel.value=sorted[0];
 }
@@ -472,9 +505,7 @@ async function loadAll(){
     document.getElementById('cfg-kml').value=S.config.kml_default||3.8;
   }catch(e){showToast('Erro: '+e.message,'error');}
   document.getElementById('loadingOverlay').style.display='none';
-  populateMonthSel();
-  populateSelects();
-  renderAll();
+  populateMonthSel();populateSelects();renderAll();
 }
 
 function initRealtime(){
@@ -509,9 +540,7 @@ function getSaldoAnt(tid,excl){
 }
 function getKmVazio(tid,ki,excl){
   if(!ki||ki<=0)return 0;
-  var ult=S.trips.filter(function(t){
-    return String(t.truck)===String(tid)&&t.id!=excl&&t.km_f>0&&t.km_f<ki;
-  }).sort(function(a,b){return b.km_f-a.km_f;});
+  var ult=S.trips.filter(function(t){return String(t.truck)===String(tid)&&t.id!=excl&&t.km_f>0&&t.km_f<ki;}).sort(function(a,b){return b.km_f-a.km_f;});
   if(!ult.length)return 0;
   var diff=ki-ult[0].km_f;
   return diff>0&&diff<=500?diff:0;
@@ -524,7 +553,6 @@ function calcFull(o){
   var mr=km>0&&cr>0?+(km/cr):0;
   var pd=lit>0&&vab>0?vab/lit:0;
   var cd=cr>0&&pd>0?+(cr*pd):vab;
-  // KM vazio calculado mas NÃO incluído no custo da viagem
   var kv=getKmVazio(truck,ki,tid);
   var dv=kv>0&&mh>0?+(kv/mh).toFixed(2):0;
   var cv=dv>0&&pd>0?+(dv*pd):0;
@@ -534,7 +562,7 @@ function calcFull(o){
   var seg=km*getSeguro();
   var ipva=km*getIPVA();
   var man=km*getManut();
-  // custo total SEM custo vazio — vazio vai para painel de frota
+  // custo vazio NAO entra no custo da viagem — vai para painel de frota
   var ct=cd+ped+com+seg+ipva+man;
   var luc=frt-ct;
   var mg=frt>0?+(luc/frt*100):0;
@@ -573,12 +601,18 @@ function calcFuel(){
 function populateSelects(){
   ['t_mot','f_mot'].forEach(function(id){
     var el=document.getElementById(id);if(!el)return;var v=el.value;
-    el.innerHTML='<option value="">Selecionar...</option>'+S.drivers.filter(function(d){return d.status==='Ativo';}).map(function(d){return'<option value="'+d.id+'">'+d.nome+'</option>';}).join('');
+    el.innerHTML='<option value="">Selecionar...</option>';
+    S.drivers.filter(function(d){return d.status==='Ativo';}).forEach(function(d){
+      var o=document.createElement('option');o.value=d.id;o.text=d.nome;el.appendChild(o);
+    });
     if(v)el.value=v;
   });
   ['t_truck','f_truck'].forEach(function(id){
     var el=document.getElementById(id);if(!el)return;var v=el.value;
-    el.innerHTML='<option value="">Selecionar...</option>'+S.trucks.filter(function(t){return t.status==='Ativo';}).map(function(t){return'<option value="'+t.id+'">'+t.placa+' — '+t.mod+'</option>';}).join('');
+    el.innerHTML='<option value="">Selecionar...</option>';
+    S.trucks.filter(function(t){return t.status==='Ativo';}).forEach(function(t){
+      var o=document.createElement('option');o.value=t.id;o.text=t.placa+' — '+t.mod;el.appendChild(o);
+    });
     if(v)el.value=v;
   });
 }
@@ -656,11 +690,20 @@ function openTripDetail(id){
   var t=S.trips.find(function(x){return x.id===id;});if(!t)return;
   document.getElementById('mDetail-title').textContent=t.ori+' → '+t.dst;
   function row(l,v,cls){return'<div class="report-row"><span>'+l+'</span><span class="'+(cls||'')+'">'+v+'</span></div>';}
-  document.getElementById('mDetailBody').innerHTML='<div class="report-section"><h4>DADOS GERAIS</h4>'+row('Motorista',t.motorista_nome)+row('Placa',t.placa)+row('Data',t.dt)+row('Status',sbadge(t.status))+row('Rota',t.ori+' → '+t.dst)+'</div><div class="report-section"><h4>OPERACIONAL</h4>'+row('KM rodado',fK(t.km))+row('Diesel consumido',t.consumido_real>0?fN(t.consumido_real,1)+' L'+(t.consumido_manual?'':' (est.)'):'—')+row('Litros abastecidos',t.lit_abast>0?fN(t.lit_abast,1)+' L':'—')+row('Média km/l',t.media_real>0?fN(t.media_real)+' km/l':'—')+row('KM vazio auto',t.km_vazio>0?fK(t.km_vazio):'0 km')+row('Saldo após',t.saldo_novo>=0?fN(t.saldo_novo,1)+' L':'—')+'</div><div class="report-section"><h4>CUSTOS</h4>'+row('Custo diesel',fR(t.custo_dsl))+row('Custo vazio',fR(t.custo_vazio))+row('Comissão',fR(t.com))+row('Seguro',fR(t.seg))+row('Manutenção',fR(t.man))+row('IPVA',fR(t.ipva))+row('Pedágios',fR(t.pedagio))+row('Custo total',fR(t.custo_total),'profit-neg')+'</div><div class="report-section"><h4>RESULTADO</h4><div class="report-total"><div class="rt-item"><small>Frete</small><strong>'+fR(t.frete)+'</strong></div><div class="rt-item"><small>Lucro</small><strong class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</strong></div><div class="rt-item"><small>Margem</small><strong class="'+mcls(t.mg)+'">'+fN(t.mg)+'%</strong></div></div></div>';
-  document.getElementById('mDetailFoot').innerHTML=(t.status==='Aguardando'?'<button class="btn btn-green" onclick="approveTrip('+t.id+')"><i class="ti ti-check"></i> Aprovar</button>':'')+
-    '<button class="btn btn-outline" onclick="closeM(\'mDetail\');openTripModal('+t.id+')"><i class="ti ti-edit"></i> Editar</button>'+
-    '<button class="btn btn-red" onclick="confirmDelete(\'trip\','+t.id+')"><i class="ti ti-trash"></i></button>'+
-    '<button class="btn btn-outline" onclick="closeM(\'mDetail\')">Fechar</button>';
+  var h='<div class="report-section"><h4>DADOS GERAIS</h4>';
+  h+=row('Motorista',t.motorista_nome)+row('Placa',t.placa)+row('Data',t.dt)+row('Status',sbadge(t.status))+row('Rota',t.ori+' → '+t.dst);
+  h+='</div><div class="report-section"><h4>OPERACIONAL</h4>';
+  h+=row('KM rodado',fK(t.km))+row('Diesel consumido',t.consumido_real>0?fN(t.consumido_real,1)+' L'+(t.consumido_manual?'':' (est.)'):'—')+row('Litros abastecidos',t.lit_abast>0?fN(t.lit_abast,1)+' L':'—')+row('Média km/l',t.media_real>0?fN(t.media_real)+' km/l':'—')+row('KM vazio auto',t.km_vazio>0?fK(t.km_vazio):'0 km')+row('Saldo após',t.saldo_novo>=0?fN(t.saldo_novo,1)+' L':'—');
+  h+='</div><div class="report-section"><h4>CUSTOS</h4>';
+  h+=row('Custo diesel',fR(t.custo_dsl))+row('Comissão',fR(t.com))+row('Seguro',fR(t.seg))+row('Manutenção',fR(t.man))+row('IPVA',fR(t.ipva))+row('Pedágios',fR(t.pedagio))+row('Custo total',fR(t.custo_total),'profit-neg');
+  h+='</div><div class="report-section"><h4>RESULTADO</h4><div class="report-total"><div class="rt-item"><small>Frete</small><strong>'+fR(t.frete)+'</strong></div><div class="rt-item"><small>Lucro</small><strong class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</strong></div><div class="rt-item"><small>Margem</small><strong class="'+mcls(t.mg)+'">'+fN(t.mg)+'%</strong></div></div></div>';
+  document.getElementById('mDetailBody').innerHTML=h;
+  var f='';
+  if(t.status==='Aguardando')f+='<button class="btn btn-green" onclick="approveTrip('+t.id+')"><i class="ti ti-check"></i> Aprovar</button>';
+  f+='<button class="btn btn-outline" onclick="closeM(\'mDetail\');openTripModal('+t.id+')"><i class="ti ti-edit"></i> Editar</button>';
+  f+='<button class="btn btn-red" onclick="confirmDelete(\'trip\','+t.id+')"><i class="ti ti-trash"></i></button>';
+  f+='<button class="btn btn-outline" onclick="closeM(\'mDetail\')">Fechar</button>';
+  document.getElementById('mDetailFoot').innerHTML=f;
   openM('mDetail');
 }
 
@@ -673,32 +716,49 @@ async function approveTrip(id){
 
 function renderDashTrips(){
   var rows=filterMonth(S.trips).slice(0,8);
-  document.getElementById('dashTripBody').innerHTML=rows.length?rows.map(function(t){return'<tr onclick="openTripDetail('+t.id+')"><td>'+sbadge(t.status)+'</td><td>'+(t.dt||'—')+'</td><td>'+t.motorista_nome+'</td><td>'+t.ori+' → '+t.dst+'</td><td>'+fK(t.km)+'</td><td>'+fR(t.frete)+'</td><td class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</td><td class="'+mcls(t.mg)+'">'+(t.mg!=null?fN(t.mg)+'%':'—')+'</td><td>'+(t.media_real>0?fN(t.media_real)+' km/l':'—')+'</td></tr>';}).join(''):'<tr><td colspan="9" style="text-align:center;color:var(--text2);padding:24px">Nenhuma viagem</td></tr>';
+  var h='';
+  if(!rows.length){h='<tr><td colspan="9" style="text-align:center;color:var(--text2);padding:24px">Nenhuma viagem</td></tr>';}
+  else{
+    rows.forEach(function(t){
+      h+='<tr onclick="openTripDetail('+t.id+')">';
+      h+='<td>'+sbadge(t.status)+'</td><td>'+(t.dt||'—')+'</td><td>'+t.motorista_nome+'</td>';
+      h+='<td>'+t.ori+' → '+t.dst+'</td><td>'+fK(t.km)+'</td><td>'+fR(t.frete)+'</td>';
+      h+='<td class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</td>';
+      h+='<td class="'+mcls(t.mg)+'">'+(t.mg!=null?fN(t.mg)+'%':'—')+'</td>';
+      h+='<td>'+(t.media_real>0?fN(t.media_real)+' km/l':'—')+'</td></tr>';
+    });
+  }
+  document.getElementById('dashTripBody').innerHTML=h;
 }
 
 function renderTripsPage(){
   var sf=document.getElementById('statusFilter')?document.getElementById('statusFilter').value:'';
   var rows=filterMonth(S.trips).filter(function(t){return!sf||t.status===sf;});
-  document.getElementById('allTripBody').innerHTML=rows.length?rows.map(function(t){
-    var fretekm=t.km>0&&t.frete>0?t.frete/t.km:null;
-    var luckm=t.km>0&&t.luc!=null?t.luc/t.km:null;
-    var luckmCls=luckm!=null?(luckm>=0?'profit-pos':'profit-neg'):'';
-    var luckmVal=luckm!=null?'R$ '+fN(luckm):'—';
-    return'<tr onclick="openTripDetail('+t.id+')">'
-      +'<td>'+sbadge(t.status)+'</td>'
-      +'<td>'+(t.dt||'—')+'</td>'
-      +'<td>'+t.motorista_nome+'</td>'
-      +'<td>'+t.ori+' → '+t.dst+'</td>'
-      +'<td>'+fK(t.km)+'</td>'
-      +'<td>'+fR(t.frete)+'</td>'
-      +'<td>'+(fretekm!=null?'R$ '+fN(fretekm):'—')+'</td>'
-      +'<td class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</td>'
-      +'<td class="'+luckmCls+'">'+luckmVal+'</td>'
-      +'<td class="'+mcls(t.mg)+'">'+(t.mg!=null?fN(t.mg)+'%':'—')+'</td>'
-      +'<td>'+(t.media_real>0?fN(t.media_real)+' km/l':'—')+'</td>'
-      +'<td style="white-space:nowrap"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openTripModal('+t.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-red btn-sm" style="margin-left:4px" onclick="event.stopPropagation();confirmDelete(\'trip\','+t.id+')"><i class="ti ti-trash"></i></button></td>'
-      +'</tr>';
-  }).join(''):'<tr><td colspan="12" style="text-align:center;color:var(--text2);padding:24px">Nenhuma viagem</td></tr>';
+  var h='';
+  if(!rows.length){h='<tr><td colspan="12" style="text-align:center;color:var(--text2);padding:24px">Nenhuma viagem</td></tr>';}
+  else{
+    rows.forEach(function(t){
+      var fkm=t.km>0&&t.frete>0?t.frete/t.km:null;
+      var lkm=t.km>0&&t.luc!=null?t.luc/t.km:null;
+      var lkmCls=lkm!=null?(lkm>=0?'profit-pos':'profit-neg'):'';
+      h+='<tr onclick="openTripDetail('+t.id+')">';
+      h+='<td>'+sbadge(t.status)+'</td>';
+      h+='<td>'+(t.dt||'—')+'</td>';
+      h+='<td>'+t.motorista_nome+'</td>';
+      h+='<td>'+t.ori+' → '+t.dst+'</td>';
+      h+='<td>'+fK(t.km)+'</td>';
+      h+='<td>'+fR(t.frete)+'</td>';
+      h+='<td>'+(fkm!=null?'R$ '+fN(fkm):'—')+'</td>';
+      h+='<td class="'+(t.luc>=0?'profit-pos':'profit-neg')+'">'+fR(t.luc)+'</td>';
+      h+='<td class="'+lkmCls+'">'+(lkm!=null?'R$ '+fN(lkm):'—')+'</td>';
+      h+='<td class="'+mcls(t.mg)+'">'+(t.mg!=null?fN(t.mg)+'%':'—')+'</td>';
+      h+='<td>'+(t.media_real>0?fN(t.media_real)+' km/l':'—')+'</td>';
+      h+='<td style="white-space:nowrap"><button class="btn btn-outline btn-sm" onclick="event.stopPropagation();openTripModal('+t.id+')"><i class="ti ti-edit"></i></button>';
+      h+='<button class="btn btn-red btn-sm" style="margin-left:4px" onclick="event.stopPropagation();confirmDelete(\'trip\','+t.id+')"><i class="ti ti-trash"></i></button></td>';
+      h+='</tr>';
+    });
+  }
+  document.getElementById('allTripBody').innerHTML=h;
 }
 
 function openFuelModal(id){
@@ -721,43 +781,23 @@ async function saveFuel(){
   renderAll();closeM('mFuel');showToast('Abastecimento salvo!');
 }
 
-function renderVazios(){
-  var tbody=document.getElementById('vazioBody');
-  if(!tbody)return;
-  var trips=filterMonth(S.trips);
-  var ativos=S.trucks.filter(function(t){return t.status==='Ativo';});
-  var rows=[];
-  ativos.forEach(function(tk){
-    var tvs=trips.filter(function(t){return String(t.truck)===String(tk.id)&&t.km_vazio>0;});
-    if(!tvs.length)return;
-    var totalKmV=tvs.reduce(function(a,t){return a+(t.km_vazio||0);},0);
-    var totalDslV=tvs.reduce(function(a,t){return a+(t.dsl_vazio_est||0);},0);
-    var totalCustV=tvs.reduce(function(a,t){return a+(t.custo_vazio||0);},0);
-    var pdList=tvs.filter(function(t){return t.preco_dsl>0;});
-    var pdMed=pdList.length?pdList.reduce(function(a,t){return a+t.preco_dsl;},0)/pdList.length:0;
-    rows.push({tk:tk,kmv:totalKmV,dslv:totalDslV,custv:totalCustV,pd:pdMed});
-  });
-  if(!rows.length){
-    tbody.innerHTML='<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--text2);font-size:12px">Nenhum deslocamento vazio neste período.</td></tr>';
-    return;
-  }
-  var html='';
-  rows.forEach(function(r){
-    html+='<tr>';
-    html+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)"><strong>'+r.tk.mod+'</strong> <span style="color:var(--text2);font-size:10px">'+r.tk.placa+'</span></td>';
-    html+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)">'+fK(r.kmv)+'</td>';
-    html+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)">'+fN(r.dslv,1)+' L <span class="est-tag">est.</span></td>';
-    html+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--red);font-weight:600">'+fR(r.custv)+' <span class="est-tag">est.</span></td>';
-    html+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--text2)">R$ '+fN(r.pd)+'/L</td>';
-    html+='</tr>';
-  });
-  tbody.innerHTML=html;
-}
-
-
+function renderFuels(){
   var fuels=filterMonth(S.fuels);
-  document.getElementById('fuelBody').innerHTML=fuels.length?fuels.map(function(f){return'<tr><td>'+f.dt+'</td><td>'+f.motorista_nome+'</td><td>'+f.placa+'</td><td>'+(f.posto||'—')+'</td><td><strong>'+fN(f.litros,1)+' L</strong></td><td>'+fR(f.val)+'</td><td>R$ '+fN(f.preco)+'</td><td>'+(f.km?f.km.toLocaleString('pt-BR'):'—')+'</td><td>'+(f.auto?'<span class="badge b-blue">Auto</span>':'')+'</td><td><button class="btn btn-outline btn-sm" onclick="openFuelModal('+f.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-red btn-sm" style="margin-left:4px" onclick="confirmDelete(\'fuel\','+f.id+')"><i class="ti ti-trash"></i></button></td></tr>';}).join(''):'<tr><td colspan="10" style="text-align:center;color:var(--text2);padding:20px">Nenhum registro</td></tr>';
-  var totL=fuels.reduce(function(a,f){return a+f.litros;},0),totV=fuels.reduce(function(a,f){return a+f.val;},0);
+  var h='';
+  if(!fuels.length){h='<tr><td colspan="10" style="text-align:center;color:var(--text2);padding:20px">Nenhum registro</td></tr>';}
+  else{
+    fuels.forEach(function(f){
+      h+='<tr><td>'+f.dt+'</td><td>'+f.motorista_nome+'</td><td>'+f.placa+'</td><td>'+(f.posto||'—')+'</td>';
+      h+='<td><strong>'+fN(f.litros,1)+' L</strong></td><td>'+fR(f.val)+'</td><td>R$ '+fN(f.preco)+'</td>';
+      h+='<td>'+(f.km?f.km.toLocaleString('pt-BR'):'—')+'</td>';
+      h+='<td>'+(f.auto?'<span class="badge b-blue">Auto</span>':'')+'</td>';
+      h+='<td><button class="btn btn-outline btn-sm" onclick="openFuelModal('+f.id+')"><i class="ti ti-edit"></i></button>';
+      h+='<button class="btn btn-red btn-sm" style="margin-left:4px" onclick="confirmDelete(\'fuel\','+f.id+')"><i class="ti ti-trash"></i></button></td></tr>';
+    });
+  }
+  document.getElementById('fuelBody').innerHTML=h;
+  var totL=fuels.reduce(function(a,f){return a+f.litros;},0);
+  var totV=fuels.reduce(function(a,f){return a+f.val;},0);
   document.getElementById('f-lit').textContent=fN(totL,1)+' L';
   document.getElementById('f-cost').textContent=fR(totV);
   document.getElementById('f-avg').textContent=totL>0?'R$ '+fN(totV/totL)+'/L':'—';
@@ -765,18 +805,63 @@ function renderVazios(){
   renderTankSaldo();
   renderVazios();
 }
+
 function renderTankSaldo(){
   var area=document.getElementById('tankSaldoArea');
   var ativos=S.trucks.filter(function(t){return t.status==='Ativo';});
   if(!ativos.length){area.innerHTML='<p style="font-size:12px;color:var(--text2)">Nenhum caminhão ativo.</p>';return;}
-  area.innerHTML=ativos.map(function(tk){
+  var h='';
+  ativos.forEach(function(tk){
     var saldo=getSaldoAnt(tk.id,null);var cap=tk.tanque||600;
     var pct=Math.min(100,cap>0?saldo/cap*100:0);
     var col=pct<15?'var(--red)':pct<25?'var(--yellow)':'var(--green)';
     var alerta=pct<15?'🔴 CRÍTICO':pct<25?'🟡 Baixo':'';
     var med=getMediaCaminhao(tk.id);var aut=med>0&&saldo>0?Math.round(saldo*med):0;
-    return'<div class="tank-bar-wrap"><div class="tank-label"><span><strong>'+tk.mod+'</strong> — '+tk.placa+'</span><span style="display:flex;align-items:center;gap:8px">'+(alerta?'<span style="font-size:10px;font-weight:700;color:'+col+'">'+alerta+'</span>':'')+'<strong style="color:'+col+'">'+fN(saldo,1)+' L</strong><span style="font-size:10px;color:var(--text2)">/ '+cap+' L ('+pct.toFixed(0)+'%)</span>'+(aut>0?'<span style="font-size:10px;color:var(--text2)">· ~'+aut.toLocaleString('pt-BR')+' km</span>':'')+'</span></div><div class="tank-bar-bg"><div class="tank-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div></div>';
-  }).join('');
+    h+='<div class="tank-bar-wrap">';
+    h+='<div class="tank-label"><span><strong>'+tk.mod+'</strong> — '+tk.placa+'</span>';
+    h+='<span style="display:flex;align-items:center;gap:8px">';
+    if(alerta)h+='<span style="font-size:10px;font-weight:700;color:'+col+'">'+alerta+'</span>';
+    h+='<strong style="color:'+col+'">'+fN(saldo,1)+' L</strong>';
+    h+='<span style="font-size:10px;color:var(--text2)">/ '+cap+' L ('+pct.toFixed(0)+'%)</span>';
+    if(aut>0)h+='<span style="font-size:10px;color:var(--text2)">· ~'+aut.toLocaleString('pt-BR')+' km</span>';
+    h+='</span></div>';
+    h+='<div class="tank-bar-bg"><div class="tank-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div>';
+    h+='</div>';
+  });
+  area.innerHTML=h;
+}
+
+function renderVazios(){
+  var tbody=document.getElementById('vazioBody');
+  if(!tbody)return;
+  var trips=filterMonth(S.trips);
+  var ativos=S.trucks.filter(function(t){return t.status==='Ativo';});
+  var h='';
+  var found=false;
+  ativos.forEach(function(tk){
+    var tvs=trips.filter(function(t){return String(t.truck)===String(tk.id)&&t.km_vazio>0;});
+    if(!tvs.length)return;
+    found=true;
+    var totalKmV=0,totalDslV=0,totalCustV=0,pdSum=0,pdCnt=0;
+    tvs.forEach(function(t){
+      totalKmV+=(t.km_vazio||0);
+      totalDslV+=(t.dsl_vazio_est||0);
+      totalCustV+=(t.custo_vazio||0);
+      if(t.preco_dsl>0){pdSum+=t.preco_dsl;pdCnt++;}
+    });
+    var pdMed=pdCnt>0?pdSum/pdCnt:0;
+    h+='<tr>';
+    h+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)"><strong>'+tk.mod+'</strong> <span style="color:var(--text2);font-size:10px">'+tk.placa+'</span></td>';
+    h+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)">'+fK(totalKmV)+'</td>';
+    h+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border)">'+fN(totalDslV,1)+' L <span class="est-tag">est.</span></td>';
+    h+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--red);font-weight:600">'+fR(totalCustV)+' <span class="est-tag">est.</span></td>';
+    h+='<td style="padding:9px 12px;font-size:12px;border-bottom:1px solid var(--border);color:var(--text2)">R$ '+fN(pdMed)+'/L</td>';
+    h+='</tr>';
+  });
+  if(!found){
+    h='<tr><td colspan="5" style="padding:14px;text-align:center;color:var(--text2);font-size:12px">Nenhum deslocamento vazio neste período.</td></tr>';
+  }
+  tbody.innerHTML=h;
 }
 
 function openTruckModal(id){
@@ -796,11 +881,24 @@ async function saveTruck(){
   renderAll();populateSelects();closeM('mTruck');showToast('Caminhão salvo!');
 }
 function renderTrucks(){
-  document.getElementById('truckGrid').innerHTML=S.trucks.length?S.trucks.map(function(t){
-    var saldo=getSaldoAnt(t.id,null);var cap=t.tanque||600;var pct=Math.min(100,cap>0?saldo/cap*100:0);
-    var col=pct<15?'var(--red)':pct<25?'var(--yellow)':'var(--green)';var med=getMediaCaminhao(t.id);
-    return'<div class="ecard"><div class="ecard-head"><div class="eico"><i class="ti ti-truck"></i></div><div style="flex:1"><div class="ename">'+t.mod+'</div><div class="esub">'+t.placa+'</div></div><span class="badge '+(t.status==='Ativo'?'b-green':'b-gray')+'">'+t.status+'</span></div><div class="estats"><div class="estat"><small>Tanque</small><strong>'+cap+' L</strong></div><div class="estat"><small>Média histórica</small><strong style="color:var(--green)">'+fN(med)+' km/l</strong></div><div class="estat"><small>Saldo <span class="est-tag">est.</span></small><strong style="color:'+col+'">'+fN(saldo,1)+' L ('+pct.toFixed(0)+'%)</strong></div><div class="estat"><small>Cor</small><strong>'+(t.cor||'—')+'</strong></div></div><div class="ecard-actions"><button class="btn btn-outline btn-sm" onclick="openTruckModal('+t.id+')"><i class="ti ti-edit"></i> Editar</button><button class="btn btn-red btn-sm" onclick="confirmDelete(\'truck\','+t.id+')"><i class="ti ti-trash"></i></button></div></div>';
-  }).join(''):'<div style="grid-column:1/-1;text-align:center;color:var(--text2);padding:32px">Nenhum caminhão.</div>';
+  var h='';
+  if(!S.trucks.length){h='<div style="grid-column:1/-1;text-align:center;color:var(--text2);padding:32px">Nenhum caminhão.</div>';}
+  else{
+    S.trucks.forEach(function(t){
+      var saldo=getSaldoAnt(t.id,null);var cap=t.tanque||600;var pct=Math.min(100,cap>0?saldo/cap*100:0);
+      var col=pct<15?'var(--red)':pct<25?'var(--yellow)':'var(--green)';var med=getMediaCaminhao(t.id);
+      h+='<div class="ecard"><div class="ecard-head"><div class="eico"><i class="ti ti-truck"></i></div>';
+      h+='<div style="flex:1"><div class="ename">'+t.mod+'</div><div class="esub">'+t.placa+'</div></div>';
+      h+='<span class="badge '+(t.status==='Ativo'?'b-green':'b-gray')+'">'+t.status+'</span></div>';
+      h+='<div class="estats"><div class="estat"><small>Tanque</small><strong>'+cap+' L</strong></div>';
+      h+='<div class="estat"><small>Média histórica</small><strong style="color:var(--green)">'+fN(med)+' km/l</strong></div>';
+      h+='<div class="estat"><small>Saldo <span class="est-tag">est.</span></small><strong style="color:'+col+'">'+fN(saldo,1)+' L ('+pct.toFixed(0)+'%)</strong></div>';
+      h+='<div class="estat"><small>Cor</small><strong>'+(t.cor||'—')+'</strong></div></div>';
+      h+='<div class="ecard-actions"><button class="btn btn-outline btn-sm" onclick="openTruckModal('+t.id+')"><i class="ti ti-edit"></i> Editar</button>';
+      h+='<button class="btn btn-red btn-sm" onclick="confirmDelete(\'truck\','+t.id+')"><i class="ti ti-trash"></i></button></div></div>';
+    });
+  }
+  document.getElementById('truckGrid').innerHTML=h;
 }
 
 function openDriverModal(id){
@@ -820,9 +918,20 @@ async function saveDriver(){
   renderAll();populateSelects();closeM('mDriver');showToast('Motorista salvo!');
 }
 function renderDrivers(){
-  document.getElementById('driverGrid').innerHTML=S.drivers.length?S.drivers.map(function(d){
-    return'<div class="ecard"><div class="ecard-head"><div class="eico blue"><i class="ti ti-user"></i></div><div style="flex:1"><div class="ename">'+d.nome+'</div><div class="esub">'+(d.tel||'—')+'</div></div><span class="badge '+(d.status==='Ativo'?'b-green':'b-gray')+'">'+d.status+'</span></div><div class="estats"><div class="estat"><small>CPF</small><strong>'+(d.cpf||'—')+'</strong></div><div class="estat"><small>Viagens</small><strong>'+S.trips.filter(function(t){return String(t.mot)===String(d.id);}).length+'</strong></div></div><div class="ecard-actions"><button class="btn btn-outline btn-sm" onclick="openDriverModal('+d.id+')"><i class="ti ti-edit"></i> Editar</button><button class="btn btn-red btn-sm" onclick="confirmDelete(\'driver\','+d.id+')"><i class="ti ti-trash"></i></button></div></div>';
-  }).join(''):'<div style="grid-column:1/-1;text-align:center;color:var(--text2);padding:32px">Nenhum motorista.</div>';
+  var h='';
+  if(!S.drivers.length){h='<div style="grid-column:1/-1;text-align:center;color:var(--text2);padding:32px">Nenhum motorista.</div>';}
+  else{
+    S.drivers.forEach(function(d){
+      h+='<div class="ecard"><div class="ecard-head"><div class="eico blue"><i class="ti ti-user"></i></div>';
+      h+='<div style="flex:1"><div class="ename">'+d.nome+'</div><div class="esub">'+(d.tel||'—')+'</div></div>';
+      h+='<span class="badge '+(d.status==='Ativo'?'b-green':'b-gray')+'">'+d.status+'</span></div>';
+      h+='<div class="estats"><div class="estat"><small>CPF</small><strong>'+(d.cpf||'—')+'</strong></div>';
+      h+='<div class="estat"><small>Viagens</small><strong>'+S.trips.filter(function(t){return String(t.mot)===String(d.id);}).length+'</strong></div></div>';
+      h+='<div class="ecard-actions"><button class="btn btn-outline btn-sm" onclick="openDriverModal('+d.id+')"><i class="ti ti-edit"></i> Editar</button>';
+      h+='<button class="btn btn-red btn-sm" onclick="confirmDelete(\'driver\','+d.id+')"><i class="ti ti-trash"></i></button></div></div>';
+    });
+  }
+  document.getElementById('driverGrid').innerHTML=h;
 }
 
 function openDespModal(id){
@@ -841,9 +950,14 @@ async function saveDesp(){
   renderDespesas();closeM('mDesp');showToast('Despesa salva!');
 }
 function renderDespesas(){
-  document.getElementById('despList').innerHTML=S.despesas.map(function(d){
-    return'<div class="desp-row"><div><div class="desp-name">'+d.cat+'</div><div class="desp-sub">'+(d.crit||'')+(d.obs?' · '+d.obs:'')+'</div></div><div style="display:flex;align-items:center;gap:10px"><span class="desp-val">'+d.val+(d.crit&&d.crit.indexOf('%')>=0?' %':'')+'</span><button class="btn btn-outline btn-sm" onclick="openDespModal('+d.id+')"><i class="ti ti-edit"></i></button><button class="btn btn-red btn-sm" onclick="confirmDelete(\'desp\','+d.id+')"><i class="ti ti-trash"></i></button></div></div>';
-  }).join('');
+  var h='';
+  S.despesas.forEach(function(d){
+    h+='<div class="desp-row"><div><div class="desp-name">'+d.cat+'</div><div class="desp-sub">'+(d.crit||'')+(d.obs?' · '+d.obs:'')+'</div></div>';
+    h+='<div style="display:flex;align-items:center;gap:10px"><span class="desp-val">'+d.val+(d.crit&&d.crit.indexOf('%')>=0?' %':'')+'</span>';
+    h+='<button class="btn btn-outline btn-sm" onclick="openDespModal('+d.id+')"><i class="ti ti-edit"></i></button>';
+    h+='<button class="btn btn-red btn-sm" onclick="confirmDelete(\'desp\','+d.id+')"><i class="ti ti-trash"></i></button></div></div>';
+  });
+  document.getElementById('despList').innerHTML=h;
 }
 
 async function saveConfig(){
@@ -869,10 +983,8 @@ function confirmDelete(type,id){
 function openReport(type){
   var trips=filterMonth(S.trips).filter(function(t){return t.status==='Aprovada'||t.status==='Prejuízo';});
   var fuels=filterMonth(S.fuels);
-  var title='',html='';
-  // mês de referência para exibir no cabeçalho
-  var sel=document.getElementById('monthSel');
-  var mesRef=sel.options[sel.selectedIndex]?sel.options[sel.selectedIndex].text:'';
+  var mesRef=getMesRef();
+  var title='',h='';
   function row(l,v,cls){return'<div class="report-row"><span>'+l+'</span><span class="'+(cls||'')+'">'+v+'</span></div>';}
   if(type==='viagens'){
     title='Relatório de Viagens — '+mesRef;
@@ -884,49 +996,70 @@ function openReport(type){
     var kml=meds.length?meds.reduce(function(a,b){return a+b;},0)/meds.length:0;
     var fatkm=km>0&&fat>0?fat/km:0;
     var luckm=km>0?luc/km:0;
-    var motList=[...new Set(trips.map(function(t){return t.motorista_nome;}))];
-    html='<div class="report-section"><h4>RESUMO</h4>'+row('Viagens',trips.length)+row('Faturamento',fR(fat),'profit-pos')+row('KM total',fK(km))+row('Lucro',fR(luc),luc>=0?'profit-pos':'profit-neg')+row('Margem',fN(mg)+'%',mcls(mg))+row('Média km/l',kml>0?fN(kml)+' km/l':'—')+row('Média faturamento/km',fatkm>0?'R$ '+fN(fatkm):'-')+row('Média lucro/km',km>0?'R$ '+fN(luckm):'-',luckm>=0?'profit-pos':'profit-neg')+'</div><div class="report-section"><h4>POR MOTORISTA</h4>'+motList.map(function(n){var tt=trips.filter(function(t){return t.motorista_nome===n;});var tf=tt.reduce(function(a,t){return a+(t.frete||0);},0);var tl=tt.reduce(function(a,t){return a+(t.luc||0);},0);return row(n,tt.length+' viagens · '+fR(tf),tl>=0?'profit-pos':'profit-neg');}).join('')+'</div>'
-    +'<div class="report-section"><h4>VIAGENS DO PERÍODO</h4>'
-    +'<table style="width:100%;border-collapse:collapse;font-size:12px">'
-    +'<thead><tr style="background:var(--bg)">'
-    +'<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;border-bottom:1px solid var(--border)">DATA</th>'
-    +'<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;border-bottom:1px solid var(--border)">ROTA</th>'
-    +'<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;border-bottom:1px solid var(--border)">KM</th>'
-    +'<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;border-bottom:1px solid var(--border)">FRETE</th>'
-    +'</tr></thead><tbody>'
-    +trips.map(function(t){return'<tr style="border-bottom:1px solid var(--border)">'
-      +'<td style="padding:7px 10px;white-space:nowrap">'+(t.dt||'—')+'</td>'
-      +'<td style="padding:7px 10px">'+t.ori+' → '+t.dst+'</td>'
-      +'<td style="padding:7px 10px;white-space:nowrap">'+fK(t.km)+'</td>'
-      +'<td style="padding:7px 10px;white-space:nowrap">'+fR(t.frete)+'</td>'
-      +'</tr>';}).join('')
-    +'</tbody></table></div>';
+    var motSet={};trips.forEach(function(t){if(!motSet[t.motorista_nome])motSet[t.motorista_nome]=[];motSet[t.motorista_nome].push(t);});
+    h='<div class="report-section"><h4>RESUMO</h4>';
+    h+=row('Viagens',trips.length)+row('Faturamento',fR(fat),'profit-pos')+row('KM total',fK(km));
+    h+=row('Lucro',fR(luc),luc>=0?'profit-pos':'profit-neg')+row('Margem',fN(mg)+'%',mcls(mg))+row('Média km/l',kml>0?fN(kml)+' km/l':'—');
+    h+=row('Média faturamento/km',fatkm>0?'R$ '+fN(fatkm):'-')+row('Média lucro/km',km>0?'R$ '+fN(luckm):'-',luckm>=0?'profit-pos':'profit-neg');
+    h+='</div><div class="report-section"><h4>POR MOTORISTA</h4>';
+    Object.keys(motSet).forEach(function(n){var tt=motSet[n];var tf=tt.reduce(function(a,t){return a+(t.frete||0);},0);var tl=tt.reduce(function(a,t){return a+(t.luc||0);},0);h+=row(n,tt.length+' viagens · '+fR(tf),tl>=0?'profit-pos':'profit-neg');});
+    h+='</div><div class="report-section"><h4>VIAGENS DO PERÍODO</h4>';
+    h+='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr>';
+    h+='<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;border-bottom:1px solid var(--border);background:var(--bg)">DATA</th>';
+    h+='<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;border-bottom:1px solid var(--border);background:var(--bg)">ROTA</th>';
+    h+='<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;border-bottom:1px solid var(--border);background:var(--bg)">KM</th>';
+    h+='<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;border-bottom:1px solid var(--border);background:var(--bg)">FRETE</th>';
+    h+='</tr></thead><tbody>';
+    trips.forEach(function(t){
+      h+='<tr style="border-bottom:1px solid var(--border)">';
+      h+='<td style="padding:7px 10px;white-space:nowrap">'+(t.dt||'—')+'</td>';
+      h+='<td style="padding:7px 10px">'+t.ori+' → '+t.dst+'</td>';
+      h+='<td style="padding:7px 10px;white-space:nowrap">'+fK(t.km)+'</td>';
+      h+='<td style="padding:7px 10px;white-space:nowrap">'+fR(t.frete)+'</td>';
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
   }else if(type==='diesel'){
     title='Relatório de Diesel — '+mesRef;
     var totL=fuels.reduce(function(a,f){return a+f.litros;},0);
     var totV=fuels.reduce(function(a,f){return a+f.val;},0);
     var totC=trips.reduce(function(a,t){return a+(t.consumido_real||0);},0);
-    html='<div class="report-section"><h4>RESUMO</h4>'+row('Litros abastecidos',fN(totL,1)+' L')+row('Custo abastecimento',fR(totV))+row('Litros consumidos',fN(totC,1)+' L')+row('Preço médio',totL>0?'R$ '+fN(totV/totL)+'/L':'—')+'</div><div class="report-section"><h4>POR CAMINHÃO</h4>'+S.trucks.map(function(tk){var saldo=getSaldoAnt(tk.id,null);var ab=fuels.filter(function(f){return String(f.truck)===String(tk.id);});var tL=ab.reduce(function(a,f){return a+f.litros;},0);var cons=trips.filter(function(t){return String(t.truck)===String(tk.id);}).reduce(function(a,t){return a+(t.consumido_real||0);},0);return row(tk.mod+' ('+tk.placa+')','Abast: '+fN(tL,1)+'L · Cons: '+fN(cons,1)+'L · Saldo: '+fN(saldo,1)+'L');}).join('')+'</div>';
+    h='<div class="report-section"><h4>RESUMO</h4>';
+    h+=row('Litros abastecidos',fN(totL,1)+' L')+row('Custo abastecimento',fR(totV))+row('Litros consumidos',fN(totC,1)+' L')+row('Preço médio',totL>0?'R$ '+fN(totV/totL)+'/L':'—');
+    h+='</div><div class="report-section"><h4>POR CAMINHÃO</h4>';
+    S.trucks.forEach(function(tk){
+      var saldo=getSaldoAnt(tk.id,null);
+      var ab=fuels.filter(function(f){return String(f.truck)===String(tk.id);});
+      var tL=ab.reduce(function(a,f){return a+f.litros;},0);
+      var cons=trips.filter(function(t){return String(t.truck)===String(tk.id);}).reduce(function(a,t){return a+(t.consumido_real||0);},0);
+      h+=row(tk.mod+' ('+tk.placa+')','Abast: '+fN(tL,1)+'L · Cons: '+fN(cons,1)+'L · Saldo: '+fN(saldo,1)+'L');
+    });
+    h+='</div>';
   }else{
     title='DRE Operacional — '+mesRef;
     var fat2=trips.reduce(function(a,t){return a+(t.frete||0);},0);
     var dsl=trips.reduce(function(a,t){return a+(t.custo_dsl||0);},0);
-    // custo vazio vem do painel de frota, não das viagens individuais
     var dslv=trips.reduce(function(a,t){return a+(t.custo_vazio||0);},0);
     var ped=trips.reduce(function(a,t){return a+(t.pedagio||0);},0);
     var com=trips.reduce(function(a,t){return a+(t.com||0);},0);
     var seg=trips.reduce(function(a,t){return a+(t.seg||0);},0);
     var ipva=trips.reduce(function(a,t){return a+(t.ipva||0);},0);
     var man=trips.reduce(function(a,t){return a+(t.man||0);},0);
-    var ctot=dsl+dslv+ped+com+seg+ipva+man;var luc2=fat2-ctot;var mg2=fat2>0?luc2/fat2*100:0;
+    var ctot=dsl+dslv+ped+com+seg+ipva+man;
+    var luc2=fat2-ctot;var mg2=fat2>0?luc2/fat2*100:0;
     var km2=trips.reduce(function(a,t){return a+(t.km||0);},0);
-    var fatkm2=km2>0?fat2/km2:0;
-    var custkm=km2>0?ctot/km2:0;
-    var luckm2=km2>0?luc2/km2:0;
-    html='<div class="report-section"><h4>DRE</h4>'+row('(+) Faturamento',fR(fat2),'profit-pos')+row('(-) Diesel',fR(dsl),'profit-neg')+row('(-) Diesel vazio',fR(dslv),'profit-neg')+row('(-) Pedágios',fR(ped),'profit-neg')+row('(-) Comissão',fR(com),'profit-neg')+row('(-) Seguro',fR(seg),'profit-neg')+row('(-) IPVA',fR(ipva),'profit-neg')+row('(-) Manutenção',fR(man),'profit-neg')+row('(=) Custo total',fR(ctot),'profit-neg')+'</div><div class="report-total"><div class="rt-item"><small>Faturamento</small><strong>'+fR(fat2)+'</strong></div><div class="rt-item"><small>Lucro</small><strong class="'+(luc2>=0?'profit-pos':'profit-neg')+'">'+fR(luc2)+'</strong></div><div class="rt-item"><small>Margem</small><strong class="'+mcls(mg2)+'">'+fN(mg2)+'%</strong></div></div>'+(km2>0?'<div class="report-section" style="margin-top:14px"><h4>INDICADORES POR KM</h4>'+row('Faturamento/km',km2>0?'R$ '+fN(fatkm2):'-')+row('Custo/km',km2>0?'R$ '+fN(custkm):'-','profit-neg')+row('Lucro/km',km2>0?'R$ '+fN(luckm2):'-',luckm2>=0?'profit-pos':'profit-neg')+'</div>':'');
+    var fatkm2=km2>0?fat2/km2:0;var custkm=km2>0?ctot/km2:0;var luckm2=km2>0?luc2/km2:0;
+    h='<div class="report-section"><h4>DRE</h4>';
+    h+=row('(+) Faturamento',fR(fat2),'profit-pos')+row('(-) Diesel',fR(dsl),'profit-neg')+row('(-) Diesel vazio',fR(dslv),'profit-neg')+row('(-) Pedágios',fR(ped),'profit-neg')+row('(-) Comissão',fR(com),'profit-neg')+row('(-) Seguro',fR(seg),'profit-neg')+row('(-) IPVA',fR(ipva),'profit-neg')+row('(-) Manutenção',fR(man),'profit-neg')+row('(=) Custo total',fR(ctot),'profit-neg');
+    h+='</div><div class="report-total"><div class="rt-item"><small>Faturamento</small><strong>'+fR(fat2)+'</strong></div><div class="rt-item"><small>Lucro</small><strong class="'+(luc2>=0?'profit-pos':'profit-neg')+'">'+fR(luc2)+'</strong></div><div class="rt-item"><small>Margem</small><strong class="'+mcls(mg2)+'">'+fN(mg2)+'%</strong></div></div>';
+    if(km2>0){
+      h+='<div class="report-section" style="margin-top:14px"><h4>INDICADORES POR KM</h4>';
+      h+=row('Faturamento/km','R$ '+fN(fatkm2))+row('Custo/km','R$ '+fN(custkm),'profit-neg')+row('Lucro/km','R$ '+fN(luckm2),luckm2>=0?'profit-pos':'profit-neg');
+      h+='</div>';
+    }
   }
   document.getElementById('mReport-title').textContent=title;
-  document.getElementById('mReportBody').innerHTML=html;
+  document.getElementById('mReportBody').innerHTML=h;
   openM('mReport');
 }
 
@@ -956,18 +1089,43 @@ function updateKPIs(){
 
 function renderFleet(){
   var ativos=S.trucks.filter(function(t){return t.status==='Ativo';});
-  document.getElementById('fleetList').innerHTML=ativos.length?ativos.map(function(t){var med=getMediaCaminhao(t.id);var col=med>=3.7?'var(--green)':med>=3.3?'var(--yellow)':'var(--red)';var p=med>0?Math.min(100,(med/4.5)*100):0;return'<div class="fleet-item"><div class="fi-ico"><i class="ti ti-truck" style="font-size:16px;color:var(--text2)"></i></div><div class="fi-info"><div class="fi-name">'+t.mod+'</div><div class="fi-plate">'+t.placa+'</div><div class="perf-bar" style="width:'+p+'%;background:'+col+'"></div></div><div class="fi-kml" style="color:'+col+'">'+fN(med)+' km/l</div></div>';}).join(''):'<p style="font-size:11px;color:var(--text2)">Nenhum caminhão.</p>';
+  var h='';
+  if(!ativos.length){h='<p style="font-size:11px;color:var(--text2)">Nenhum caminhão.</p>';}
+  else{
+    ativos.forEach(function(t){
+      var med=getMediaCaminhao(t.id);var col=med>=3.7?'var(--green)':med>=3.3?'var(--yellow)':'var(--red)';var p=med>0?Math.min(100,(med/4.5)*100):0;
+      h+='<div class="fleet-item"><div class="fi-ico"><i class="ti ti-truck" style="font-size:16px;color:var(--text2)"></i></div>';
+      h+='<div class="fi-info"><div class="fi-name">'+t.mod+'</div><div class="fi-plate">'+t.placa+'</div>';
+      h+='<div class="perf-bar" style="width:'+p+'%;background:'+col+'"></div></div>';
+      h+='<div class="fi-kml" style="color:'+col+'">'+fN(med)+' km/l</div></div>';
+    });
+  }
+  document.getElementById('fleetList').innerHTML=h;
 }
 
 function renderAlerts(){
   var alerts=[];
   var trips=filterMonth(S.trips);
-  var wait=trips.filter(function(t){return t.status==='Aguardando';}).length;if(wait>0)alerts.push({c:'alert-yellow',i:'ti-alert-circle',t:'Aguardando conferência',s:wait+' viagem(ns)'});
-  var prej=trips.filter(function(t){return t.status==='Prejuízo';}).length;if(prej>0)alerts.push({c:'alert-red',i:'ti-alert-triangle',t:'Viagens com prejuízo',s:prej+' viagem(ns)'});
-  S.trucks.filter(function(x){return x.status==='Ativo';}).forEach(function(tk){var saldo=getSaldoAnt(tk.id,null);var cap=tk.tanque||600;var p=cap>0?saldo/cap*100:100;if(p<15)alerts.push({c:'alert-red',i:'ti-gas-station',t:'Tanque crítico: '+tk.placa,s:fN(saldo,1)+' L'});else if(p<25)alerts.push({c:'alert-yellow',i:'ti-droplet',t:'Tanque baixo: '+tk.placa,s:fN(saldo,1)+' L'});});
+  var wait=trips.filter(function(t){return t.status==='Aguardando';}).length;
+  if(wait>0)alerts.push({c:'alert-yellow',i:'ti-alert-circle',t:'Aguardando conferência',s:wait+' viagem(ns)'});
+  var prej=trips.filter(function(t){return t.status==='Prejuízo';}).length;
+  if(prej>0)alerts.push({c:'alert-red',i:'ti-alert-triangle',t:'Viagens com prejuízo',s:prej+' viagem(ns)'});
+  S.trucks.filter(function(x){return x.status==='Ativo';}).forEach(function(tk){
+    var saldo=getSaldoAnt(tk.id,null);var cap=tk.tanque||600;var p=cap>0?saldo/cap*100:100;
+    if(p<15)alerts.push({c:'alert-red',i:'ti-gas-station',t:'Tanque crítico: '+tk.placa,s:fN(saldo,1)+' L'});
+    else if(p<25)alerts.push({c:'alert-yellow',i:'ti-droplet',t:'Tanque baixo: '+tk.placa,s:fN(saldo,1)+' L'});
+  });
   var nb=document.getElementById('ntfBadge');nb.textContent=alerts.length;nb.style.display=alerts.length?'flex':'none';
-  document.getElementById('alertList').innerHTML=alerts.length?alerts.map(function(a){return'<div class="alert-item"><div class="ai-ico '+a.c+'"><i class="ti '+a.i+'"></i></div><div class="ai-text"><strong>'+a.t+'</strong><small>'+a.s+'</small></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--text3);font-size:14px"></i></div>';}).join(''):'<p style="font-size:11px;color:var(--text2);padding:8px 0">Nenhum alerta.</p>';
-  document.getElementById('notifList').innerHTML=alerts.length?alerts.map(function(a){return'<div class="notif-item"><i class="ti '+a.i+'" style="font-size:16px;color:var(--text2)"></i><div><strong style="font-size:12px;display:block">'+a.t+'</strong><small style="color:var(--text2)">'+a.s+'</small></div></div>';}).join(''):'<div style="padding:12px 14px;font-size:12px;color:var(--text2)">Sem notificações.</div>';
+  var ah='',nh='';
+  if(!alerts.length){ah='<p style="font-size:11px;color:var(--text2);padding:8px 0">Nenhum alerta.</p>';nh='<div style="padding:12px 14px;font-size:12px;color:var(--text2)">Sem notificações.</div>';}
+  else{
+    alerts.forEach(function(a){
+      ah+='<div class="alert-item"><div class="ai-ico '+a.c+'"><i class="ti '+a.i+'"></i></div><div class="ai-text"><strong>'+a.t+'</strong><small>'+a.s+'</small></div><i class="ti ti-chevron-right" style="margin-left:auto;color:var(--text3);font-size:14px"></i></div>';
+      nh+='<div class="notif-item"><i class="ti '+a.i+'" style="font-size:16px;color:var(--text2)"></i><div><strong style="font-size:12px;display:block">'+a.t+'</strong><small style="color:var(--text2)">'+a.s+'</small></div></div>';
+    });
+  }
+  document.getElementById('alertList').innerHTML=ah;
+  document.getElementById('notifList').innerHTML=nh;
 }
 
 var lineC=null,donutC=null;
@@ -976,7 +1134,8 @@ function buildCharts(){
   var y=parseInt(r.start.split('-')[0]);var mo=parseInt(r.start.split('-')[1]);
   var dim=new Date(y,mo,0).getDate();
   var days=[];for(var i=1;i<=dim;i++)days.push(String(i).padStart(2,'0'));
-  var fat=days.map(function(){return 0;});var luc=days.map(function(){return 0;});
+  var fat=[];var luc=[];
+  for(var j=0;j<dim;j++){fat.push(0);luc.push(0);}
   filterMonth(S.trips).forEach(function(t){if(t.dt){var d=parseInt((t.dt||'').split('-')[2]||'1')-1;if(d>=0&&d<dim){fat[d]+=(t.frete||0);luc[d]+=(t.luc||0);}}});
   var ctx1=document.getElementById('lineChart');if(!ctx1)return;
   if(lineC){lineC.destroy();lineC=null;}
@@ -997,7 +1156,9 @@ function buildCharts(){
   var ctx2=document.getElementById('donutChart');if(!ctx2)return;
   if(donutC){donutC.destroy();donutC=null;}
   donutC=new Chart(ctx2,{type:'doughnut',data:{labels:dL,datasets:[{data:dV,backgroundColor:dC,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false}}}});
-  document.getElementById('donutLeg').innerHTML=dL.map(function(l,i){return'<div style="display:flex;align-items:center;justify-content:space-between;padding:2px 0;font-size:11px"><span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:'+dC[i]+';display:inline-block"></span>'+l+'</span><span style="font-weight:600">'+dV[i]+'%</span></div>';}).join('');
+  var legH='';
+  dL.forEach(function(l,i){legH+='<div style="display:flex;align-items:center;justify-content:space-between;padding:2px 0;font-size:11px"><span style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:2px;background:'+dC[i]+';display:inline-block"></span>'+l+'</span><span style="font-weight:600">'+dV[i]+'%</span></div>';});
+  document.getElementById('donutLeg').innerHTML=legH;
 }
 
 function openM(id){document.getElementById(id).classList.add('open');}
