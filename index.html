@@ -843,7 +843,22 @@ function openReport(type){
     var fatkm=km>0&&fat>0?fat/km:0;
     var luckm=km>0?luc/km:0;
     var motList=[...new Set(trips.map(function(t){return t.motorista_nome;}))];
-    html='<div class="report-section"><h4>RESUMO</h4>'+row('Viagens',trips.length)+row('Faturamento',fR(fat),'profit-pos')+row('KM total',fK(km))+row('Lucro',fR(luc),luc>=0?'profit-pos':'profit-neg')+row('Margem',fN(mg)+'%',mcls(mg))+row('Média km/l',kml>0?fN(kml)+' km/l':'—')+row('Média faturamento/km',fatkm>0?'R$ '+fN(fatkm):'-')+row('Média lucro/km',km>0?'R$ '+fN(luckm):'-',luckm>=0?'profit-pos':'profit-neg')+'</div><div class="report-section"><h4>POR MOTORISTA</h4>'+motList.map(function(n){var tt=trips.filter(function(t){return t.motorista_nome===n;});var tf=tt.reduce(function(a,t){return a+(t.frete||0);},0);var tl=tt.reduce(function(a,t){return a+(t.luc||0);},0);return row(n,tt.length+' viagens · '+fR(tf),tl>=0?'profit-pos':'profit-neg');}).join('')+'</div>';
+    html='<div class="report-section"><h4>RESUMO</h4>'+row('Viagens',trips.length)+row('Faturamento',fR(fat),'profit-pos')+row('KM total',fK(km))+row('Lucro',fR(luc),luc>=0?'profit-pos':'profit-neg')+row('Margem',fN(mg)+'%',mcls(mg))+row('Média km/l',kml>0?fN(kml)+' km/l':'—')+row('Média faturamento/km',fatkm>0?'R$ '+fN(fatkm):'-')+row('Média lucro/km',km>0?'R$ '+fN(luckm):'-',luckm>=0?'profit-pos':'profit-neg')+'</div><div class="report-section"><h4>POR MOTORISTA</h4>'+motList.map(function(n){var tt=trips.filter(function(t){return t.motorista_nome===n;});var tf=tt.reduce(function(a,t){return a+(t.frete||0);},0);var tl=tt.reduce(function(a,t){return a+(t.luc||0);},0);return row(n,tt.length+' viagens · '+fR(tf),tl>=0?'profit-pos':'profit-neg');}).join('')+'</div>'
+    +'<div class="report-section"><h4>VIAGENS DO PERÍODO</h4>'
+    +'<table style="width:100%;border-collapse:collapse;font-size:12px">'
+    +'<thead><tr style="background:var(--bg)">'
+    +'<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;border-bottom:1px solid var(--border)">DATA</th>'
+    +'<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;border-bottom:1px solid var(--border)">ROTA</th>'
+    +'<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;border-bottom:1px solid var(--border)">KM</th>'
+    +'<th style="padding:7px 10px;text-align:left;font-size:10px;color:var(--text2);font-weight:700;letter-spacing:.5px;border-bottom:1px solid var(--border)">FRETE</th>'
+    +'</tr></thead><tbody>'
+    +trips.map(function(t){return'<tr style="border-bottom:1px solid var(--border)">'
+      +'<td style="padding:7px 10px;white-space:nowrap">'+(t.dt||'—')+'</td>'
+      +'<td style="padding:7px 10px">'+t.ori+' → '+t.dst+'</td>'
+      +'<td style="padding:7px 10px;white-space:nowrap">'+fK(t.km)+'</td>'
+      +'<td style="padding:7px 10px;white-space:nowrap">'+fR(t.frete)+'</td>'
+      +'</tr>';}).join('')
+    +'</tbody></table></div>';
   }else if(type==='diesel'){
     title='Relatório de Diesel';
     var totL=fuels.reduce(function(a,f){return a+f.litros;},0);
